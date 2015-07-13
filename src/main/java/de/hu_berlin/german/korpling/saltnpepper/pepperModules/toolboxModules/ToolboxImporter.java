@@ -169,7 +169,7 @@ public class ToolboxImporter extends PepperImporterImpl implements
 	public void importCorpusStructure(SCorpusGraph sCorpusGraph)
 			throws PepperModuleException {
 		if (sCorpusGraph== null){
-			throw new PepperModuleException(this, "Cannot import corpus structure, the passed corpus graph was null. ");
+			throw new PepperModuleException(this, "Cannot import corpus structure, the passed corpus graph was null.");
 		}
 		setSCorpusGraph(sCorpusGraph);
 		if (getCorpusDesc().getCorpusPath() != null) {
