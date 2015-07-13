@@ -114,17 +114,14 @@ public class ToolboxImporter extends PepperImporterImpl implements
 		super();
 		this.setName("ToolboxImporter");
 		this.setVersion("0.0.1");
-		this.setDesc("erstmal noch nichts");
+		this.setDesc("This importer transforms data of toolbox format to salt. The tag that includes the textual data is configurable.");
 		this.setSupplierContact(URI.createURI("saltnpepper@lists.hu-berlin.de"));
 		this.setSupplierHomepage(URI
 				.createURI("saltnpepper@lists.hu-berlin.de"));
 		this.addSupportedFormat("toolbox-xml", "1.0", null);
 		this.getSDocumentEndings().add("xml");
+		this.setProperties(new ToolboxImporterProperties());
 	}
-
-	
-	
-	
 
 	/**
 	 * <strong>OVERRIDE THIS METHOD FOR CUSTOMIZATION</strong> <br/>
@@ -151,60 +148,13 @@ public class ToolboxImporter extends PepperImporterImpl implements
 	 *         connected to given {@link SElementId}
 	 */
 	public PepperMapper createPepperMapper(SElementId sElementId) {
-		
-		return null;
-	}
-
-	/**
-	 * This class is a dummy implementation for a mapper, to show how it works.
-	 * This sample mapper only produces a fixed document-structure in method
-	 * {@link SampleMapper#mapSDocument()} and enhances the corpora for further
-	 * meta-annotations in the method {@link SampleMapper#mapSCorpus()}. <br/>
-	 * In production, it might be better to implement the mapper in its own
-	 * file, we just did it here for compactness of the code.
-	 * 
-	 * @author Florian Zipser
-	 *
-	 */
-	public class SampleMapper extends PepperMapperImpl {
-		/**
-		 * <strong>OVERRIDE THIS METHOD FOR CUSTOMIZATION</strong> <br/>
-		 * If you need to make any adaptations to the corpora like adding
-		 * further meta-annotation, do it here. When whatever you have done
-		 * successful, return the status {@link DOCUMENT_STATUS#COMPLETED}. If
-		 * anything went wrong return the status {@link DOCUMENT_STATUS#FAILED}. <br/>
-		 * In our dummy implementation, we just add a creation date to each
-		 * corpus.
-		 */
-		@Override
-		public DOCUMENT_STATUS mapSCorpus() {
-			return (DOCUMENT_STATUS.COMPLETED);
+		PepperMapper mapper = new Toolbox2SaltMapper();
+		if (sElementId.getIdentifiableElement() != null
+				&& sElementId.getIdentifiableElement() instanceof SDocument) {
+			URI resource = getSElementId2ResourceTable().get(sElementId);
+			mapper.setResourceURI(resource);
 		}
-
-		/**
-		 * <strong>OVERRIDE THIS METHOD FOR CUSTOMIZATION</strong> <br/>
-		 * This is the place for the real work. Here you have to do anything
-		 * necessary, to map a corpus to Salt. These could be things like:
-		 * reading a file, mapping the content, closing the file, cleaning up
-		 * and so on. <br/>
-		 * In our dummy implementation, we do not read a file, for not making
-		 * the code too complex. We just show how to create a simple
-		 * document-structure in Salt, in following steps:
-		 * <ol>
-		 * <li>creating primary data</li>
-		 * <li>creating tokenization</li>
-		 * <li>creating part-of-speech annotation for tokenization</li>
-		 * <li>creating information structure annotation via spans</li>
-		 * <li>creating anaphoric relation via pointing relation</li>
-		 * <li>creating syntactic annotations</li>
-		 * </ol>
-		 */
-		@Override
-		public DOCUMENT_STATUS mapSDocument() {
-			// TODO: do stuff
-			return null;
-
-		}
+		return mapper;
 	}
 
 	/**
