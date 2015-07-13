@@ -122,88 +122,9 @@ public class ToolboxImporter extends PepperImporterImpl implements
 		this.getSDocumentEndings().add("xml");
 	}
 
-	/**
-	 * <strong>OVERRIDE THIS METHOD FOR CUSTOMIZATION</strong> <br/>
-	 * This method is called by the pepper framework to import the
-	 * corpus-structure for the passed {@link SCorpusGraph} object. In Pepper
-	 * each import step gets an own {@link SCorpusGraph} to work on. This graph
-	 * has to be filled with {@link SCorpus} and {@link SDocument} objects
-	 * representing the corpus-structure of the corpus to be imported. <br/>
-	 * In many cases, the corpus-structure can be retrieved from the
-	 * file-structure of the source files. Therefore Pepper provides a default
-	 * mechanism to map the file-structure to corpus-structure. This default
-	 * mechanism can be configured. To adapt the default behavior to your needs,
-	 * we recommend, to take a look into the 'Developer's Guide for Pepper
-	 * modules', you will find on <a
-	 * href="https://u.hu-berlin.de/saltnpepper/">https
-	 * ://u.hu-berlin.de/saltnpepper/</a>. <br/>
-	 * Just to show the creation of a corpus-structure for our sample purpose,
-	 * we here create a simple corpus-structure manually. The simple contains a
-	 * root-corpus <i>c1</i> having two sub-corpora <i>c2</i> and <i>c3</i>.
-	 * Each sub-corpus contains two documents <i>d1</i> and <i>d2</i> for
-	 * <i>d3</i> and <i>d4</i> and <i>c1</i> for <i>c3</i>.
-	 * 
-	 * <pre>
-	 *       c1
-	 *    /      \
-	 *   c2      c3
-	 *  /  \    /  \
-	 * d1  d2  d3  d4
-	 * </pre>
-	 * 
-	 * The URIs of the corpora and documents would be:
-	 * <ul>
-	 * <li>salt:/c1</li>
-	 * <li>salt:/c1/c2</li>
-	 * <li>salt:/c1/c2/d1</li>
-	 * <li>salt:/c1/c2/d2</li>
-	 * <li>salt:/c1/c3</li>
-	 * <li>salt:/c1/c3/d3</li>
-	 * <li>salt:/c1/c3/d4</li>
-	 * </ul>
-	 * 
-	 * @param corpusGraph
-	 *            the CorpusGraph object, which has to be filled.
-	 */
-	@Override
-	public void importCorpusStructure(SCorpusGraph sCorpusGraph)
-			throws PepperModuleException {
-		if (sCorpusGraph== null){
-			throw new PepperModuleException(this, "Cannot import corpus structure, the passed corpus graph was null.");
-		}
-		setSCorpusGraph(sCorpusGraph);
-		if (getCorpusDesc().getCorpusPath() != null) {
-			String corpusPathStr = getCorpusDesc().getCorpusPath()
-					.toFileString();
-			if (corpusPathStr == null) {
-				corpusPathStr = getCorpusDesc().getCorpusPath().toString();
-			}
-			File corpusPath = new File(corpusPathStr);
-			readFolderStructure(corpusPath, null);
-		}
-	}
-
-	private void readFolderStructure(File path, SCorpus parentCorpus) {
-		if (path != null && path.exists() && path.isDirectory()) {
-			SCorpus corpus = SaltFactory.eINSTANCE.createSCorpus();
-			corpus.setSName(path.getName());
-			if (parentCorpus== null){
-				getSCorpusGraph().addSNode(corpus);
-			}else{
-				getSCorpusGraph().addSSubCorpus(parentCorpus, corpus);
-			}
-			for (File file : path.listFiles()) {
-				if (file.isDirectory()) {
-					readFolderStructure(file, corpus);
-				} else {
-					CorpusStructureReader corpusStructureReader = new CorpusStructureReader();
-					corpusStructureReader.setCorpusGraph(getSCorpusGraph());
-					corpusStructureReader.setParentCorpus(corpus);
-					this.readXMLResource(corpusStructureReader, URI.createFileURI(file.getAbsolutePath()));
-				}
-			}
-		}
-	}
+	
+	
+	
 
 	/**
 	 * <strong>OVERRIDE THIS METHOD FOR CUSTOMIZATION</strong> <br/>
@@ -230,9 +151,8 @@ public class ToolboxImporter extends PepperImporterImpl implements
 	 *         connected to given {@link SElementId}
 	 */
 	public PepperMapper createPepperMapper(SElementId sElementId) {
-		SampleMapper mapper = new SampleMapper();
-		mapper.setResourceURI(getSElementId2ResourceTable().get(sElementId));
-		return (mapper);
+		
+		return null;
 	}
 
 	/**
