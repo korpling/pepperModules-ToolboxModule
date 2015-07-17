@@ -56,7 +56,7 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 						getSDocument().getSDocumentGraph().addNode(primaryText);
 					}
 					String text = currentText.toString();
-					
+
 					if (((ToolboxImporterProperties) getProperties())
 							.tokenizeText()) {
 
@@ -66,22 +66,15 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 
 						int offset = primaryText.getSText().length();
 						primaryText.setSText(primaryText.getSText() + text);
-						System.out.println(primaryText.getSText());
 						for (String tok : tokenList) {
 							int currentPos = text.indexOf(tok);
-							System.out.println("currentPos: " +currentPos);
 							int start = offset + currentPos;
-							System.out.println("start: " +start);
 							int end = start + tok.length();
-							System.out.println("end: "+end);
-							offset += tok.length()+currentPos;
-							System.out.println("offset: " + offset);
-							text = text.substring(currentPos+tok.length());
-							System.out.println("text: "+ text);
-							
-							SToken t = getSDocument().getSDocumentGraph().createSToken(
+							offset += tok.length() + currentPos;
+							text = text.substring(currentPos + tok.length());
+
+							getSDocument().getSDocumentGraph().createSToken(
 									primaryText, start, end);
-							System.out.println(getSDocument().getSDocumentGraph().getSText(t));
 						}
 					} else {
 						primaryText.setSText(primaryText.getSText() + text);
