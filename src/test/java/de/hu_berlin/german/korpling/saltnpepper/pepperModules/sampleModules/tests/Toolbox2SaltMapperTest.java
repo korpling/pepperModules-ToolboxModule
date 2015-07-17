@@ -163,7 +163,7 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 	}
 	
 	/**
-	 * test for correct generation of primary data with new generated STextualDS for each primary text
+	 * test for correct generation of token with concatenated STextualDS.
 	 * 
 	 * @throws XMLStreamException
 	 * @throws IOException 
@@ -194,6 +194,7 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		xml.flush();
 		
 		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_CONCATENATE_TEXT)).setValue(true);
+		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_TOKENIZE_TEXT)).setValue(true);
 		start(getFixture(), outStream.toString());
 		
 		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens());
@@ -213,6 +214,63 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		assertEquals("example", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(6)));
 		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(7));
 		assertEquals(".", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(7)));
+	
+	}
+	
+	/**
+	 * test for correct generation of token with new generated STextualDS for each primary text.
+	 * 
+	 * @throws XMLStreamException
+	 * @throws IOException 
+	 * @throws SAXException 
+	 * @throws ParserConfigurationException 
+	 */
+	@Test
+	public void testPrimDataConcatenateFalseToken() throws XMLStreamException, ParserConfigurationException, SAXException, IOException {
+		xml.writeStartDocument();
+		xml.writeStartElement(TAG_DATABASE);
+		xml.writeStartElement(TAG_REF_GROUP);
+		xml.writeStartElement(TAG_REF);
+		xml.writeCharacters("exampleText");
+		xml.writeEndElement();
+		xml.writeStartElement(TAG_UNICODE);
+		xml.writeCharacters(TAG_TEXT1);
+		xml.writeEndElement();
+		xml.writeEndElement();
+		xml.writeStartElement(TAG_REF_GROUP);
+		xml.writeStartElement(TAG_REF);
+		xml.writeCharacters("secondExampleText");
+		xml.writeEndElement();
+		xml.writeStartElement(TAG_UNICODE);
+		xml.writeCharacters(TAG_TEXT2);
+		xml.writeEndElement();
+		xml.writeEndElement();
+		xml.writeEndDocument();
+		xml.flush();
+		
+		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_CONCATENATE_TEXT)).setValue(false);
+		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_TOKENIZE_TEXT)).setValue(true);
+		start(getFixture(), outStream.toString());
+		
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens());
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0));
+		assertEquals("this", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0)));
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1));
+		assertEquals("is", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1)));
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(2));
+		assertEquals("an", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(2)));
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(3));
+		assertEquals("example", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(3)));
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(4));
+		assertEquals(".", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(4)));
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(5));
+		assertEquals(".", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(5)));
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(6));
+		assertEquals("second", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(6)));
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(7));
+		assertEquals("example", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(7)));
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(8));
+		assertEquals(".", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(8)));
 	
 	}
 

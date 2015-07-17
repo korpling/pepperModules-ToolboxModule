@@ -89,6 +89,12 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 				} else {
 					primaryText = getSDocument().getSDocumentGraph()
 							.createSTextualDS(currentText.toString());
+					
+					if (((ToolboxImporterProperties) getProperties())
+							.tokenizeText()) {
+						getSDocument().getSDocumentGraph().tokenize();
+					}
+					
 
 				}
 			}
