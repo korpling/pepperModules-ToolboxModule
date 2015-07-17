@@ -5,9 +5,9 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModulePrope
 
 public class ToolboxImporterProperties extends PepperModuleProperties {
 
-	static final String PROP_TEXT_ELEMENT = "textElement";
-	static final String CONCATENATE_TEXT = "concatenateText";
-	static final String TOKENIZE_TEXT = "tokenizeText";
+	public static final String PROP_TEXT_ELEMENT = "textElement";
+	public static final String PROP_CONCATENATE_TEXT = "concatenateText";
+	public static final String PROP_TOKENIZE_TEXT = "tokenizeText";
 
 	public ToolboxImporterProperties() {
 		addProperty(new PepperModuleProperty<>(
@@ -16,15 +16,15 @@ public class ToolboxImporterProperties extends PepperModuleProperties {
 				"Defines the name of the xml tag that includes the textual data to be used as primary text. This is set to 'unicode' by default.",
 				"unicode"));
 		addProperty(new PepperModuleProperty<>(
-				CONCATENATE_TEXT,
+				PROP_CONCATENATE_TEXT,
 				Boolean.class,
 				"Defines, if the textual data shall be concatenated or if a new string object shall be created. This is set to 'false' by default.",
-				false));
+				false,false));
 		addProperty(new PepperModuleProperty<>(
-				TOKENIZE_TEXT,
+				PROP_TOKENIZE_TEXT,
 				Boolean.class,
 				"Defines, if the textual data shall be tokenized. This is set to 'true' by default.",
-				true));
+				true,false));
 	}
 
 	public String getPrimaryTextElement() {
@@ -33,11 +33,11 @@ public class ToolboxImporterProperties extends PepperModuleProperties {
 
 	// konkatenieren?
 	public Boolean concatenateText() {
-		return (Boolean) getProperty(CONCATENATE_TEXT).getValue();
+		return (Boolean) getProperty(PROP_CONCATENATE_TEXT).getValue();
 	}
 
 	// tokenisieren?
 	public Boolean tokenizeText() {
-		return (Boolean) getProperty(TOKENIZE_TEXT).getValue();
+		return (Boolean) getProperty(PROP_TOKENIZE_TEXT).getValue();
 	}
 }

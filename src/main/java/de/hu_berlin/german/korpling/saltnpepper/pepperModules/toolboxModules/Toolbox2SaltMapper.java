@@ -43,42 +43,56 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 		@Override
 		public void endElement(String uri, String localName, String qName)
 				throws SAXException {
+
 			if (qName == ((ToolboxImporterProperties) getProperties())
 					.getPrimaryTextElement()) {
+				// concatenate each primary text in the data to one large
+				// STextualDS
 				if (((ToolboxImporterProperties) getProperties())
 						.concatenateText()) {
-					//TODO: florian an junit-test erinnern, checken wieso text überschrieben wird & wieso "null" reingeschrieben wird
 					if (primaryText == null) {
 						primaryText = SaltFactory.eINSTANCE.createSTextualDS();
+						primaryText.setSText("");
 						getSDocument().getSDocumentGraph().addNode(primaryText);
-						String text = currentText.toString();
-						primaryText.setSText(primaryText.getSText() + text);
-						if (((ToolboxImporterProperties) getProperties())
-								.tokenizeText()) {
-
-							Tokenizer tokenizer = new Tokenizer();
-							List<String> tokenList = tokenizer
-									.tokenizeToString(currentText.toString(),
-											null);
-
-							int offset = primaryText.getSText().length();
-							for (String tok : tokenList) {
-								int currentPos = text.indexOf(tok);
-								int start = offset + currentPos;
-								int end = start + tok.length();
-								offset += currentPos;
-								text = text.substring(currentPos);
-								getSDocument().getSDocumentGraph()
-										.createSToken(primaryText, start, end);
-							}
-						} else {
-							getSDocument().getSDocumentGraph().createSToken(
-									primaryText,
-									primaryText.getSText().length()
-											- text.length(),
-									primaryText.getSText().length());
-						}
 					}
+					String text = currentText.toString();
+					
+					if (((ToolboxImporterProperties) getProperties())
+							.tokenizeText()) {
+
+						Tokenizer tokenizer = new Tokenizer();
+						List<String> tokenList = tokenizer.tokenizeToString(
+								currentText.toString(), null);
+
+						int offset = primaryText.getSText().length();
+						primaryText.setSText(primaryText.getSText() + text);
+						System.out.println(primaryText.getSText());
+						for (String tok : tokenList) {
+							int currentPos = text.indexOf(tok);
+							System.out.println("currentPos: " +currentPos);
+							int start = offset + currentPos;
+							System.out.println("start: " +start);
+							int end = start + tok.length();
+							System.out.println("end: "+end);
+							offset += tok.length()+currentPos;
+							System.out.println("offset: " + offset);
+							text = text.substring(currentPos+tok.length());
+							System.out.println("text: "+ text);
+							
+							SToken t = getSDocument().getSDocumentGraph().createSToken(
+									primaryText, start, end);
+							System.out.println(getSDocument().getSDocumentGraph().getSText(t));
+						}
+					} else {
+						primaryText.setSText(primaryText.getSText() + text);
+						getSDocument().getSDocumentGraph()
+								.createSToken(
+										primaryText,
+										primaryText.getSText().length()
+												- text.length(),
+										primaryText.getSText().length());
+					}
+
 				} else {
 					primaryText = getSDocument().getSDocumentGraph()
 							.createSTextualDS(currentText.toString());
