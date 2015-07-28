@@ -9,10 +9,15 @@ import org.xml.sax.ext.DefaultHandler2;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SAudioDataSource;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer;
 
+//TODO remember created tokens and create a span for all tokens. 
+//TODO For each xml element (except audio element) create an annotation (name= name of xml element, value= name of xml element)
+//TODO create a property for defining the xml element containing the audio file (default is 'sound'), for xml element sound create a SAudioDataSource, set the audio reference to a uri containing the absolute pfad to the audio file (audio.setSAudioReference(URI.createFileURI('absolute path'));) 
+//TODO link SAudioDataSource with each token via a SAudioRelation
 public class Toolbox2SaltMapper extends PepperMapperImpl {
 
 	@Override
@@ -43,7 +48,8 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 		@Override
 		public void endElement(String uri, String localName, String qName)
 				throws SAXException {
-
+			SAudioDataSource audio= null;
+			
 			if (qName == ((ToolboxImporterProperties) getProperties())
 					.getPrimaryTextElement()) {
 				// concatenate each primary text in the data to one large
