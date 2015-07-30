@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>pepperModules</groupId>
@@ -19,7 +18,7 @@
       <id>korpling</id>
       <name>korpling maven repo</name>
       <url>file:///srv/www/maven2/</url>
-      <!-- <url>scpexe://korpling.german.hu-berlin.de/srv/www/maven2/</url>-->
+      
     </repository>
   </distributionManagement>
   <repositories>
@@ -29,12 +28,11 @@
       <url>http://korpling.german.hu-berlin.de/maven2</url>
     </repository>
   </repositories>
-  <!-- 	Declares this project to be an extension of the project pepper-parentModule. The parent project for instance contains all dependencies 
-		necessary for using the SaltNPepper environment (all Pepper projects and all Salt projects).-->
+  
   <parent>
     <groupId>de.hu_berlin.german.korpling.saltnpepper</groupId>
     <artifactId>pepper-parentModule</artifactId>
-    <version>2.1.2-SNAPSHOT</version>
+    <version>2.1.2</version>
     <relativePath>../pepper-parentModule/pom.xml</relativePath>
   </parent>
   <description>This project provides three sample modules for Pepper. It provides an importer, an exporter and a manipulator. The project can be used as a container for creating new PepperModules. One just have to override the areas marked with TODO.</description>
@@ -43,14 +41,14 @@
   	<system>Redmine</system>
   	<url>https://github.com/korpling/pepperModules-ToolboxModules/issues</url>
   </issueManagement>
-  <!-- TODO /6/ change the continuous integration management system to the one you are using, in case of you do not use any one, remove this entry. -->
+  
   <ciManagement>
   	<system>Jenkins</system>
   	<url>https://korpling.german.hu-berlin.de/jenkins/</url>
   </ciManagement>
   <inceptionYear>2015</inceptionYear>
   <organization>
-  	<name>Humboldt-Universität zu Berlin, INRIA</name>
+  	<name>Humboldt-Universit&#228;t zu Berlin, INRIA</name>
   </organization>
   <scm>
     <developerConnection>git@github.com:korpling/pepperModules-ToolboxModules.git</developerConnection>
@@ -58,7 +56,7 @@
   </scm>
  
   <dependencies>
-    <!-- TODO /10/ ... put here all the dependencies you need, which are not already included in the parent project...-->
+    
   <dependency>
 	<groupId>stax</groupId>
 	<artifactId>stax</artifactId>
@@ -67,23 +65,20 @@
   </dependencies>
   <build>
     <plugins>
-      <!-- start: Plugin for automatic releasing -->
+      
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
         <version>${maven-release-plugin.version}</version>
         <configuration>
           <tagBase>
-          <!-- TODO /11/ change the connection to the tags folder of your scm, what you can see here is the subversion connection for the pepperModules-SampleModules project -->
+          
            https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/SampleModules/tags/
           </tagBase>
           <releaseProfiles>release</releaseProfiles>
           <goals>package assembly:single deploy</goals>
         </configuration>
       </plugin>
-      <!-- 	start: creation of bundle jar
-			This plugIn creates a META-INF folder if not present and adds the entries into the MANIFEST.MF file required for OSGi. It
-			also creates an OSGI-INF folder necessary for using service-components in OSGi.
-	  -->
+      
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -108,19 +103,13 @@
             <Bundle-RequiredExecutionEnvironment>JavaSE-${java.version}</Bundle-RequiredExecutionEnvironment>
             <Service-Component>${allServiceComponents}</Service-Component>
             <Include-Resource>{maven-resources}, LICENSE, NOTICE</Include-Resource>
-            <!-- 	TODO /13/ 
-            		In case of you want to add not mavenized 3rd party libraries, put the into the project structure 
-            		under path RESOURCE_PATH and fullfill the following two entries. The alias RESOURCE_ALIAS can be any String
-            		Don't forget to remove the <Include-Resource> tag above.
-	            <Bundle-ClassPath>.,{maven-dependencies}, RESOURCE_ALIAS</Bundle-ClassPath> 
-	            <Include-Resource>{maven-resources}, LICENSE, NOTICE, RESOURCE_ALIAS=RESOURCE_PATH</Include-Resource>
-             -->
+            
           </instructions>
         </configuration>
       </plugin>
-      <!-- end: creation of bundle jar -->
       
-      <!-- start: maven site plugin -->
+      
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
@@ -143,8 +132,8 @@
           </reportPlugins>
         </configuration>
       </plugin>
-      <!-- end: maven site plugin -->
-      <!-- start: of docbook plugin -->
+      
+      
       <plugin>
         <groupId>com.agilejava.docbkx</groupId>
         <artifactId>docbkx-maven-plugin</artifactId>
@@ -168,7 +157,7 @@
               <useSvg>true</useSvg>
               <useExtensions>true</useExtensions>
               <sectionAutolabel>true</sectionAutolabel>
-              <!-- font configuration -->
+              
               <bodyFontFamily>DejaVu Serif</bodyFontFamily>
               <monospaceFontFamily>DejaVu Sans Mono</monospaceFontFamily>
               <titleFontFamily>DejaVu Sans</titleFontFamily>
@@ -298,7 +287,7 @@
           </execution>
         </executions>
       </plugin>
-      <!-- end of docbook plugin -->
+      
     </plugins>
   </build>
 </project>
