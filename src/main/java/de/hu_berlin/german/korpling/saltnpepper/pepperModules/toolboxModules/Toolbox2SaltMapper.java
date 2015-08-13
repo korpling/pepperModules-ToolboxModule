@@ -1,7 +1,14 @@
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
@@ -10,11 +17,12 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SAudioDataSource;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 
-//TODO remember created tokens and create a span for all tokens. 
 //TODO For each xml element (except audio element) create an annotation (name= name of xml element, value= name of xml element)
 //TODO create a property for defining the xml element containing the audio file (default is 'sound'), for xml element sound create a SAudioDataSource, set the audio reference to a uri containing the absolute pfad to the audio file (audio.setSAudioReference(URI.createFileURI('absolute path'));) 
 //TODO link SAudioDataSource with each token via a SAudioRelation
@@ -24,9 +32,10 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 	public DOCUMENT_STATUS mapSDocument() {
 		DocumentStructureReader contentHandler = new DocumentStructureReader();
 		this.readXMLResource(contentHandler, getResourceURI());
+
 		return DOCUMENT_STATUS.COMPLETED;
 	}
-
+	
 	public class DocumentStructureReader extends DefaultHandler2 {
 		@Override
 		public void startElement(String uri, String localName, String qName,
@@ -35,6 +44,7 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 
 		private StringBuilder currentText = new StringBuilder();
 
+		
 		@Override
 		public void characters(char[] ch, int start, int length)
 				throws SAXException {
@@ -45,15 +55,21 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 
 		STextualDS primaryText = null;
 
+		EList<SToken> currentTokList = new BasicEList<SToken>();
+		SSpan currentTokSpan = SaltFactory.eINSTANCE.createSSpan();
+
+		HashMap<String, String> annoList = new HashMap<String, String>();
+		
 		@Override
 		public void endElement(String uri, String localName, String qName)
 				throws SAXException {
-			SAudioDataSource audio= null;
-			
+			SAudioDataSource audio = null;
+
 			if (qName == ((ToolboxImporterProperties) getProperties())
 					.getPrimaryTextElement()) {
 				// concatenate each primary text in the data to one large
 				// STextualDS
+
 				if (((ToolboxImporterProperties) getProperties())
 						.concatenateText()) {
 					if (primaryText == null) {
@@ -66,6 +82,7 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 					if (((ToolboxImporterProperties) getProperties())
 							.tokenizeText()) {
 
+						// concatenated and tokenized
 						Tokenizer tokenizer = new Tokenizer();
 						List<String> tokenList = tokenizer.tokenizeToString(
 								currentText.toString(), null);
@@ -79,31 +96,106 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 							offset += tok.length() + currentPos;
 							text = text.substring(currentPos + tok.length());
 
-							getSDocument().getSDocumentGraph().createSToken(
-									primaryText, start, end);
+							SToken currTok = getSDocument().getSDocumentGraph()
+									.createSToken(primaryText, start, end);
+
+							// remember all SToken
+							currentTokList.add(currTok);
 						}
+
 					} else {
+						// concatenated and not tokenized
 						primaryText.setSText(primaryText.getSText() + text);
-						getSDocument().getSDocumentGraph()
+						SToken currTok = getSDocument().getSDocumentGraph()
 								.createSToken(
 										primaryText,
 										primaryText.getSText().length()
 												- text.length(),
 										primaryText.getSText().length());
+						currentTokList.add(currTok);
 					}
 
 				} else {
+					// not concatenated
 					primaryText = getSDocument().getSDocumentGraph()
 							.createSTextualDS(currentText.toString());
-					
+
 					if (((ToolboxImporterProperties) getProperties())
 							.tokenizeText()) {
-						getSDocument().getSDocumentGraph().tokenize();
+
+						// not concatenated but tokenized
+						currentTokList = getSDocument().getSDocumentGraph()
+								.tokenize();
+						
+					} else {
+						// not concatenated and not tokenized
+						SToken currentTok = getSDocument().getSDocumentGraph()
+								.createSToken(primaryText, 0,
+										primaryText.getSText().length());
+						currentTokList.add(currentTok);
 					}
-					
 
 				}
+				
+				
+				if(!annoList.isEmpty() && ((ToolboxImporterProperties) getProperties()).createNewSpan()){
+					currentTokSpan = getSDocument().getSDocumentGraph().createSSpan(currentTokList);
+					
+					for (Entry<String, String> anno : annoList.entrySet()){
+					currentTokSpan.createSAnnotation(null, anno.getKey().toString(),
+							anno.getValue().toString());
+
+					 System.out.println(currentTokSpan.getSName());
+					 for (SToken c : currentTokList) {
+							System.out.println("hier: "+getSDocument()
+									.getSDocumentGraph().getSText(c));
+						}
+					}
+				}
+	
 			}
+			
+			// create a new span for each annotation
+			if (((ToolboxImporterProperties) getProperties()).createNewSpan()) {
+				
+				if (qName != ((ToolboxImporterProperties) getProperties())
+						.getPrimaryTextElement()
+						&& qName != ((ToolboxImporterProperties) getProperties())
+								.getAudioRecordElement() && qName != ((ToolboxImporterProperties) getProperties())
+										.getSegmentingElement()) {
+					// save all annotations except audio and primary text as
+					// span
+					
+					if (!currentTokList.isEmpty()) {
+						
+						currentTokSpan = getSDocument().getSDocumentGraph()
+								.createSSpan(currentTokList);
+						currentTokSpan.createSAnnotation(null, qName,
+								currentText.toString());
+						 System.out.println(currentTokSpan.getSName());
+						 for (SToken c : currentTokList) {
+								System.out.println("hier: "+getSDocument()
+										.getSDocumentGraph().getSText(c));
+							}
+					} else {						
+						annoList.put(qName, currentText.toString());	
+						}
+
+				}
+
+				if (qName == ((ToolboxImporterProperties) getProperties())
+						.getAudioRecordElement()) {
+					audio = SaltFactory.eINSTANCE.createSAudioDataSource();
+					audio.setSAudioReference(URI.createFileURI(currentText
+							.toString()));
+				}
+			}
+
+			if (qName == ((ToolboxImporterProperties) getProperties())
+					.getSegmentingElement()) {
+				currentTokList = new BasicEList<SToken>();
+			}
+
 			currentText = new StringBuilder();
 		}
 	}
