@@ -43,7 +43,7 @@ public class ToolboxImporterProperties extends PepperModuleProperties {
 				true, false));
 		addProperty(new PepperModuleProperty<>(
 				PROP_ASSOCIATE_WITH_ALL_TOKEN,
-				String.class,
+				List.class,
 				"If there is more than one tag of primary text in one segment (refGroup) and you wish to associate some annotations not only to the current primary text tag, but to all primary text tags of the current segment (refGroup), you can enumerate those annotation layer names here.",
 				null, false));
 		addProperty(new PepperModuleProperty<>(
@@ -75,8 +75,8 @@ public class ToolboxImporterProperties extends PepperModuleProperties {
 	}
 	
 	// associate annotations with all tokens of the current refGroup or only with the current one? 
-	public String associateWithAllToken() {
-		return (String) getProperty(PROP_ASSOCIATE_WITH_ALL_TOKEN).getValue();
+	public List<String> associateWithAllToken() {
+		return (List<String>) getProperty(PROP_ASSOCIATE_WITH_ALL_TOKEN).getValue();
 	}
 	
 	// create new span for each annotation?
