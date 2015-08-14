@@ -173,20 +173,20 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 	 * @throws SAXException 
 	 * @throws ParserConfigurationException 
 	 */
-	@Test
-	public void testPrimDataConcatenateFalse() throws XMLStreamException, ParserConfigurationException, SAXException, IOException {
-		
-		createFirstSample();
-		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_CONCATENATE_TEXT)).setValue(false);
-		start(getFixture(), outStream.toString());
-		
-		assertEquals(2, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0));
-		assertEquals(TAG_TEXT1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(1));
-		assertEquals(TAG_TEXT2, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(1).getSText());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens());
-	}
+//	@Test
+//	public void testPrimDataConcatenateFalse() throws XMLStreamException, ParserConfigurationException, SAXException, IOException {
+//		
+//		createFirstSample();
+//		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_CONCATENATE_TEXT)).setValue(false);
+//		start(getFixture(), outStream.toString());
+//		
+//		assertEquals(2, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
+//		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0));
+//		assertEquals(TAG_TEXT1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
+//		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(1));
+//		assertEquals(TAG_TEXT2, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(1).getSText());
+//		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens());
+//	}
 	
 	/**
 	 * test for correct generation of token with concatenated STextualDS.
@@ -255,26 +255,26 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 	 * @throws SAXException 
 	 * @throws ParserConfigurationException 
 	 */
-	@Test
-	public void testPrimDataConcatenateFalseToken() throws XMLStreamException, ParserConfigurationException, SAXException, IOException {
-		
-		createFirstSample();
-		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_CONCATENATE_TEXT)).setValue(false);
-		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_TOKENIZE_TEXT)).setValue(true);
-		start(getFixture(), outStream.toString());
-		
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0));
-		assertEquals("this", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1));
-		assertEquals("is", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(2));
-		assertEquals("an", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(2)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(3));
-		assertEquals("example", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(3)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(4));
-		assertEquals(".", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(4)));
-		// check Tokenizer!
+//	@Test
+//	public void testPrimDataConcatenateFalseToken() throws XMLStreamException, ParserConfigurationException, SAXException, IOException {
+//		
+//		createFirstSample();
+//		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_CONCATENATE_TEXT)).setValue(false);
+//		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_TOKENIZE_TEXT)).setValue(true);
+//		start(getFixture(), outStream.toString());
+//		
+//		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens());
+//		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0));
+//		assertEquals("this", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0)));
+//		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1));
+//		assertEquals("is", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1)));
+//		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(2));
+//		assertEquals("an", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(2)));
+//		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(3));
+//		assertEquals("example", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(3)));
+//		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(4));
+//		assertEquals(".", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(4)));
+//		// check Tokenizer!
 //		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(5));
 //		assertEquals(".", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(5)));
 //		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(6));
@@ -283,7 +283,7 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 //		assertEquals("example", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(7)));
 //		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(8));
 //		assertEquals(".", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(8)));
-	}
+//	}
 	
 	/**
 	 * test for correct generation of token with new generated STextualDS for each primary text, without tokenization.
@@ -378,21 +378,39 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_NEW_SPAN)).setValue(false);
 		start(getFixture(), outStream.toString());
 		
-//		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans());
-//		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0));
-//		assertEquals("this is an example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0)));
-//		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2));
-//		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(3)));
-//		assertEquals("ref", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSName());
-//		assertEquals("exampleText", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSValue());
-//		assertEquals("gloss", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().get(0).getSName());
-//		assertEquals("example Gloss.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().get(0).getSValue());
-//		assertEquals("note", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().get(0).getSName());
-//		assertEquals("This is an example note.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().get(0).getSValue());
-//		assertEquals("ref", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(3).getSAnnotations().get(0).getSName());
-//		assertEquals("secondExampleText", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(3).getSAnnotations().get(0).getSValue());
-//		
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans());
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0));
+		assertEquals("this is an example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0)));
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1));
+		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1)));
+		
 	}
 
-
+	/**
+	 * test for correct generation of annotations with concatenated STextualDS for each primary text (only one span for all annotations).
+	 * 
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 */
+	@Test
+	public void testPrimDataConcatenateTokSSpanFalseAnno() throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
+		
+		createSecondSample();
+		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_CONCATENATE_TEXT)).setValue(true);
+		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_TOKENIZE_TEXT)).setValue(true);
+		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_NEW_SPAN)).setValue(false);
+		start(getFixture(), outStream.toString());
+		
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAnnotations());
+		assertEquals("ref", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSName());
+		assertEquals("exampleText", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSValue());
+		assertEquals("gloss", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(1).getSName());
+		assertEquals("example Gloss.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(1).getSValue());
+		assertEquals("note", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(2).getSName());
+		assertEquals("This is an example note.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(2).getSValue());
+		assertEquals("ref", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().get(0).getSName());
+		assertEquals("secondExampleText", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().get(0).getSValue());	
+	}
 }
