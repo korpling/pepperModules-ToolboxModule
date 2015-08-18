@@ -32,13 +32,14 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 		return DOCUMENT_STATUS.COMPLETED;
 	}
 
+	private StringBuilder currentText = new StringBuilder();
+
 	public class DocumentStructureReader extends DefaultHandler2 {
 		@Override
 		public void startElement(String uri, String localName, String qName,
 				Attributes attributes) throws SAXException {
+			currentText = new StringBuilder();
 		}
-
-		private StringBuilder currentText = new StringBuilder();
 
 		@Override
 		public void characters(char[] ch, int start, int length)
@@ -125,9 +126,8 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 						if (((ToolboxImporterProperties) getProperties())
 								.tokenizeText()) {
 							// not concatenated but tokenized
-							currentTokList = getSDocument().getSDocumentGraph()
-									.tokenize();
-
+							Tokenizer tokenizer = new Tokenizer();
+							currentTokList = tokenizer.tokenize(primaryText);
 						} else {
 							// not concatenated and not tokenized
 							SToken currentTok = getSDocument()
@@ -138,11 +138,11 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 						}
 
 					}
-
 					currentTokSpan = getSDocument().getSDocumentGraph()
 							.createSSpan(currentTokList);
 					// create annotation of tags that were loaded before the
 					// actual primary text
+
 					if (!annoList.isEmpty()) {
 
 						for (Entry<String, String> anno : annoList.entrySet()) {
@@ -166,58 +166,24 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 					if (qName != ((ToolboxImporterProperties) getProperties())
 							.getPrimaryTextElement()
 							&& qName != ((ToolboxImporterProperties) getProperties())
-									.getAudioRecordElement()
-							&& qName != ((ToolboxImporterProperties) getProperties())
 									.getSegmentingElement()) {
-
-						// save all annotations except audio and primary
-						// text as span
-						if (!currentTokList.isEmpty()) {
-							// create a new span for each annotation
-							if (((ToolboxImporterProperties) getProperties())
-									.createNewSpan()) {
-								currentTokSpan = getSDocument()
-										.getSDocumentGraph().createSSpan(
-												currentTokList);
-							}
-							currentTokSpan.createSAnnotation(null, qName,
-									currentText.toString());
-
-						} else {
-							annoList.put(qName, currentText.toString());
-						}
-
-						if (qName == ((ToolboxImporterProperties) getProperties())
+						if (qName != ((ToolboxImporterProperties) getProperties())
 								.getAudioRecordElement()) {
-							audio = SaltFactory.eINSTANCE
-									.createSAudioDataSource();
-
-							File audioFile = new File(currentText.toString());
-
-							if (audioFile.exists()) {
-								audio.setSAudioReference(URI
-										.createFileURI(currentText.toString()));
-							} else {
-								URI absPath = getResourceURI()
-										.appendFileExtension(
-												currentText.toString());
-								File audioFileAbs = new File(absPath.path());
-								if (audioFileAbs.exists()) {
-									audio.setSAudioReference(URI
-											.createFileURI(absPath.path()));
-								} else {
-									ToolboxImporter.logger
-											.debug("No audio file found.");
+							// save all annotations except audio and primary
+							// text as span
+							if (!currentTokList.isEmpty()) {
+								// create a new span for each annotation
+								if (((ToolboxImporterProperties) getProperties())
+										.createNewSpan()) {
+									currentTokSpan = getSDocument()
+											.getSDocumentGraph().createSSpan(
+													currentTokList);
 								}
-							}
+								currentTokSpan.createSAnnotation(null, qName,
+										currentText.toString());
 
-							for (SToken tok : currentTokList) {
-								SAudioDSRelation audioRel = SaltFactory.eINSTANCE
-										.createSAudioDSRelation();
-								audioRel.setSToken(tok);
-								audioRel.setSAudioDS(audio);
-								getSDocument().getSDocumentGraph()
-										.addSRelation(audioRel);
+							} else {
+								annoList.put(qName, currentText.toString());
 							}
 						}
 					} else {
@@ -242,6 +208,47 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 							} else {
 								annoList.put(qName, currentText.toString());
 							}
+						}
+					}
+
+					if (qName == ((ToolboxImporterProperties) getProperties())
+							.getAudioRecordElement()) {
+						audio = SaltFactory.eINSTANCE.createSAudioDataSource();
+
+						File audioFile = new File(currentText.toString());
+
+						if (audioFile.exists()) {
+							audio.setSAudioReference(URI
+									.createFileURI(currentText.toString()));
+							getSDocument().getSDocumentGraph().addSNode(audio);
+						} else {
+							URI absPath = getResourceURI().appendFileExtension(
+									currentText.toString());
+							File audioFileAbs = new File(absPath.path());
+							if (audioFileAbs.exists()) {
+								audio.setSAudioReference(URI
+										.createFileURI(absPath.path()));
+								getSDocument().getSDocumentGraph().addSNode(audio);
+							} else {
+								ToolboxImporter.logger
+										.warn("No audio file found.");
+							}
+						}
+						if (!currentTokList.isEmpty()) {
+							int counter = 0;
+							for (SToken tok : currentTokList) {
+								System.out.println("counter: "+counter+ " token: "+getSDocument().getSDocumentGraph().getSText(tok));
+								SAudioDSRelation audioRel = SaltFactory.eINSTANCE
+										.createSAudioDSRelation();
+								
+								audioRel.setSToken(tok);
+								audioRel.setSAudioDS(getSDocument().getSDocumentGraph().getSAudioDataSources().get(0));
+								counter += 1;
+								getSDocument().getSDocumentGraph()
+										.addSRelation(audioRel);
+							}
+						}else{
+							
 						}
 					}
 				} else {
