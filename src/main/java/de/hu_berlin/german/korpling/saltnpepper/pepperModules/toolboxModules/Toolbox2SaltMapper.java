@@ -332,12 +332,11 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 			return audio;
 		} else {
 			// check if relative path is given
-			URI absPath = getResourceURI().trimSegments(1).appendFragment(
-					currentText.toString());
-			
-			audioFile = new File(absPath.path());
+			String absPath = getResourceURI().toFileString().replace(this.getResourceURI().lastSegment(), currentText.toString());
+
+			audioFile = new File(absPath);
 			if (audioFile.exists()) {
-				audio.setSAudioReference(URI.createFileURI(absPath.path()));
+				audio.setSAudioReference(URI.createFileURI(absPath));
 				getSDocument().getSDocumentGraph().addSNode(audio);
 				return audio;
 			} else {
