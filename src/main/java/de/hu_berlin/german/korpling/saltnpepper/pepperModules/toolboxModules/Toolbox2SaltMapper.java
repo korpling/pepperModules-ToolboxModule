@@ -87,7 +87,8 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 			if (annosToAssociateWithWholeSegment != null) {
 				// convert string of annotations, that shall be associated with
 				// the primary texts of the whole segment, to a list, to ensure
-				// proper function (e.g.: a string "refGroup" contains "ref" but a list
+				// proper function (e.g.: a string "refGroup" contains "ref" but
+				// a list
 				// with only one element "refGroup" does not)
 				annosToAssociateWithWholeSegmentList = Arrays
 						.asList(annosToAssociateWithWholeSegment
@@ -228,8 +229,23 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 											.getSDocumentGraph().createSSpan(
 													currentTokList);
 								}
-								tokSpan.createSAnnotation(null, qName,
-										currentText.toString());
+								if (!tokSpan.hasLabel(qName)) {
+									tokSpan.createSAnnotation(null, qName,
+											currentText.toString());
+								} else {
+									int i = 1;
+									String annoName = qName;
+									while(tokSpan.hasLabel(annoName) && i <= tokSpan.getSAnnotations().size()){
+										if(!tokSpan.hasLabel(annoName+"_"+i)){
+											annoName = annoName + "_" + i;
+										}
+										i++;
+									}
+									ToolboxImporter.logger.warn("The annotation layer '"+ qName +"' allready exists and was replaced by '" + annoName +"'.");
+									
+									tokSpan.createSAnnotation(null, annoName,
+											currentText.toString());
+								}
 
 							} else {
 								// save annotations if primary text wasn't read
@@ -263,7 +279,6 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 						annoListForSegmentElem.put(qName,
 								currentText.toString());
 					}
-
 				}
 
 				if (qName == ((ToolboxImporterProperties) getProperties())
@@ -285,9 +300,7 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 								audio = createAudioData();
 								// create audio relation for each token
 								createAudioRelForEachTok(segmentTokList, audio);
-							}
-							if (anno.getKey() != ((ToolboxImporterProperties) getProperties())
-									.getAudioRecordElement()) {
+							} else {
 								// check if there are any annotations that shall
 								// be associated to the whole segment
 								if (((ToolboxImporterProperties) getProperties())
@@ -297,8 +310,24 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 											.getSDocumentGraph().createSSpan(
 													segmentTokList);
 								}
-								tokSpan.createSAnnotation(null, anno.getKey(),
-										anno.getValue());
+								if (!tokSpan.hasLabel(anno.getKey())) {
+									tokSpan.createSAnnotation(null, anno.getKey(),
+											anno.getValue());
+								} else {
+									int i = 1;
+									String annoName = anno.getKey();
+									while(tokSpan.hasLabel(annoName) && i <= tokSpan.getSAnnotations().size()){
+										if(!tokSpan.hasLabel(annoName+"_"+i)){
+											annoName = annoName + "_" + i;
+										}
+										i++;
+									}
+									ToolboxImporter.logger.warn("The annotation layer '"+ anno.getKey() +"' allready exists and was replaced by '" + annoName +"'.");
+									
+									tokSpan.createSAnnotation(null, annoName,
+											anno.getValue());
+								}
+								
 							}
 						}
 
@@ -332,7 +361,9 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 			return audio;
 		} else {
 			// check if relative path is given
-			String absPath = getResourceURI().toFileString().replace(this.getResourceURI().lastSegment(), currentText.toString());
+			String absPath = getResourceURI().toFileString()
+					.replace(this.getResourceURI().lastSegment(),
+							currentText.toString());
 
 			audioFile = new File(absPath);
 			if (audioFile.exists()) {
