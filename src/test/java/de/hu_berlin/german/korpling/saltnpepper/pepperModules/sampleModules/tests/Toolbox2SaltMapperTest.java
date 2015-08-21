@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperTestUtil;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.Toolbox2SaltMapper;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.ToolboxImporterProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.ToolboxXmlDictionary;
@@ -156,7 +157,7 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		xml.writeCharacters("example Gloss.");
 		xml.writeEndElement();
 		xml.writeStartElement(TAG_SOUND);
-		xml.writeCharacters("/home/viv/Schreibtisch/korpling/exampleSound.wav");
+		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.wav");
 		xml.writeEndElement();
 		xml.writeStartElement(TAG_NOTE);
 		xml.writeCharacters("This is an example note.");
@@ -170,7 +171,7 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		xml.writeCharacters(TAG_TEXT2);
 		xml.writeEndElement();
 		xml.writeStartElement(TAG_SOUND);
-		xml.writeCharacters("/home/viv/Schreibtisch/korpling/exampleSound.wav");
+		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.wav");
 		xml.writeEndElement();
 		xml.writeEndElement();
 		xml.writeEndDocument();
@@ -507,8 +508,8 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().get(0));
 		assertEquals(8,getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().size());
 		assertEquals(2,getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().size());
-		assertEquals("/home/viv/Schreibtisch/korpling/exampleSound.wav",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).getSAudioDS().getSAudioReference().toFileString());
-		assertEquals("/home/viv/Schreibtisch/korpling/exampleSound.wav",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(1).getSAudioDS().getSAudioReference().toFileString());
+		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.wav",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).getSAudioDS().getSAudioReference().toFileString());
+		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.wav",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(1).getSAudioDS().getSAudioReference().toFileString());
 		}
 	
 	/**
@@ -583,7 +584,8 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		assertEquals("this is an example.second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2)));
 		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(3)));
 		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(4)));
-
+		
+		
 		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations());
 		assertEquals("gloss", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSName());
 		assertEquals("example Gloss.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSValue());
