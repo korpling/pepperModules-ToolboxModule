@@ -157,7 +157,7 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		xml.writeCharacters("example Gloss.");
 		xml.writeEndElement();
 		xml.writeStartElement(TAG_SOUND);
-		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.wav");
+		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.mp3");
 		xml.writeEndElement();
 		xml.writeStartElement(TAG_NOTE);
 		xml.writeCharacters("This is an example note.");
@@ -171,7 +171,7 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		xml.writeCharacters(TAG_TEXT2);
 		xml.writeEndElement();
 		xml.writeStartElement(TAG_SOUND);
-		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.wav");
+		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.mp3");
 		xml.writeEndElement();
 		xml.writeEndElement();
 		xml.writeEndDocument();
@@ -228,7 +228,7 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		xml.writeCharacters("example Gloss.");
 		xml.writeEndElement();
 		xml.writeStartElement(TAG_SOUND);
-		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.wav");
+		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.mp3");
 		xml.writeEndElement();
 		xml.writeStartElement(TAG_NOTE);
 		xml.writeCharacters("This is an example note.");
@@ -245,7 +245,7 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		xml.writeCharacters("second example Gloss.");
 		xml.writeEndElement();
 //		xml.writeStartElement(TAG_SOUND);
-//		xml.writeCharacters(PepperTestUtil.getTestResources() + "blub.wav");
+//		xml.writeCharacters(PepperTestUtil.getTestResources() + "blub.mp3");
 //		xml.writeEndElement();
 		xml.writeEndElement();
 		xml.writeEndDocument();
@@ -548,8 +548,8 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().get(0));
 		assertEquals(8,getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().size());
 		assertEquals(2,getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().size());
-		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.wav",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).getSAudioDS().getSAudioReference().toFileString());
-		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.wav",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(1).getSAudioDS().getSAudioReference().toFileString());
+		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.mp3",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).getSAudioDS().getSAudioReference().toFileString());
+		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.mp3",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(1).getSAudioDS().getSAudioReference().toFileString());
 		}
 	
 	/**
@@ -662,6 +662,6 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().get(0));
 		assertEquals(5,getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().size());
 		assertEquals(1,getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().size());
-		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.wav",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).getSAudioDS().getSAudioReference().toFileString());
+		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.mp3",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).getSAudioDS().getSAudioReference().toFileString());
 	}
 }
