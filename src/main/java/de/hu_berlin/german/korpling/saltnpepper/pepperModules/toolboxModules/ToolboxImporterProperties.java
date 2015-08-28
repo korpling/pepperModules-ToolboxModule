@@ -22,6 +22,7 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModulePrope
  */
 
 public class ToolboxImporterProperties extends PepperModuleProperties {
+	//TODO remove serial id and ignore warning in eclipse, Java can doo that automatrically, what is more error prune
 	private static final long serialVersionUID = 3403186500470804226L;
 	public static final String PROP_TEXT_ELEMENT = "textElement";
 	public static final String PROP_SOUND_ELEMENT = "audioRefElement";

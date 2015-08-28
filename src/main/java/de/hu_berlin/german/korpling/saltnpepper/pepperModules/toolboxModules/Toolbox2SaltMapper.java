@@ -44,6 +44,8 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 
 			currentText = new StringBuilder();
 
+			//TODO don't use ==, use equals() instead, == only compares pointer ref
+			//TODO when comparing a variable String with a constant, always use the constant as anchor e.g. "CONSTANT".equals(variable) 
 			if (qName == ((ToolboxImporterProperties) getProperties())
 					.getPrimaryTextElement()) {
 				// reset currentTokList for each new primary text
@@ -72,6 +74,9 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 		EList<SToken> segmentTokList = new BasicEList<SToken>();
 		SSpan tokSpan = SaltFactory.eINSTANCE.createSSpan();
 
+		//TODO why a map, why not a set?
+		//TODO since java 7 you can do: new HashMap<>();
+		//TODO try to use the interface whenever it is possible: Map<String, String>
 		HashMap<String, String> annoList = new HashMap<String, String>();
 		HashMap<String, String> annoListForSegmentElem = new HashMap<String, String>();
 
