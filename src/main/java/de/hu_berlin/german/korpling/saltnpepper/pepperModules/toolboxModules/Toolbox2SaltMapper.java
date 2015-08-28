@@ -7,12 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
+
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
@@ -44,19 +46,22 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 
 			currentText = new StringBuilder();
 
-			//TODO don't use ==, use equals() instead, == only compares pointer ref
 			//TODO when comparing a variable String with a constant, always use the constant as anchor e.g. "CONSTANT".equals(variable) 
-			if (qName == ((ToolboxImporterProperties) getProperties())
-					.getPrimaryTextElement()) {
+			if (qName.equals(((ToolboxImporterProperties) getProperties())
+					.getPrimaryTextElement())) {
 				// reset currentTokList for each new primary text
 				currentTokList = new BasicEList<SToken>();
 			}
 
-			if (qName == ((ToolboxImporterProperties) getProperties())
-					.getSegmentingElement()) {
-				// reset annoListForSegmentElem for each new segment (e.g.
-				// refGroup)
+			if (qName.equals(((ToolboxImporterProperties) getProperties())
+					.getSegmentingElement())) {
+				// reset lists
+				currentTokList = new BasicEList<SToken>();
+				segmentTokList = new BasicEList<SToken>();
+				annoList = new HashMap<String, String>();
+				audioList = new HashMap<String, String>();
 				annoListForSegmentElem = new HashMap<String, String>();
+				tokSpan = SaltFactory.eINSTANCE.createSSpan();
 			}
 		}
 
@@ -70,7 +75,9 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 
 		STextualDS primaryText = null;
 
+		// save all tokens of the current primary text
 		EList<SToken> currentTokList = new BasicEList<SToken>();
+		// save all tokens of the whole segment
 		EList<SToken> segmentTokList = new BasicEList<SToken>();
 		SSpan tokSpan = SaltFactory.eINSTANCE.createSSpan();
 
@@ -78,6 +85,7 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 		//TODO since java 7 you can do: new HashMap<>();
 		//TODO try to use the interface whenever it is possible: Map<String, String>
 		HashMap<String, String> annoList = new HashMap<String, String>();
+		HashMap<String, String> audioList = new HashMap<String, String>();
 		HashMap<String, String> annoListForSegmentElem = new HashMap<String, String>();
 
 		String annosToAssociateWithWholeSegment = ((ToolboxImporterProperties) getProperties())
@@ -92,25 +100,27 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 			if (annosToAssociateWithWholeSegment != null) {
 				// convert string of annotations, that shall be associated with
 				// the primary texts of the whole segment, to a list, to ensure
-				// proper function (e.g.: a string "refGroup" contains "ref" but a list
+				// proper function (e.g.: a string "refGroup" contains "ref" but
+				// a list
 				// with only one element "refGroup" does not)
 				annosToAssociateWithWholeSegmentList = Arrays
 						.asList(annosToAssociateWithWholeSegment
 								.split("\\s*,\\s*"));
 			}
-			if (qName != ((ToolboxImporterProperties) getProperties())
-					.getRootElement()) {
+
+			if (!qName.equals(((ToolboxImporterProperties) getProperties())
+					.getRootElement())) {
 				// exclude the root element from operations
 
-				if (qName == ((ToolboxImporterProperties) getProperties())
-						.getPrimaryTextElement()) {
+				if (qName.equals(((ToolboxImporterProperties) getProperties())
+						.getPrimaryTextElement())) {
 					// qName is primary text
+					currentTokList = new BasicEList<SToken>();
 
 					if (((ToolboxImporterProperties) getProperties())
 							.concatenateText()) {
 						// concatenate each primary text in the data to one
-						// large
-						// STextualDS
+						// large STextualDS
 
 						if (primaryText == null) {
 							// initialize primaryText
@@ -207,6 +217,14 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 						// reset annoList for next primary text
 						annoList = new HashMap<String, String>();
 					}
+					if (!audioList.isEmpty()) {
+						for (Entry<String, String> audioEntry : audioList
+								.entrySet()) {
+							audio = createAudioData(audioEntry.getValue());
+							createAudioRelForEachTok(currentTokList, audio);
+						}
+						audioList = new HashMap<String, String>();
+					}
 				}
 
 				// annotations are only associated with the current primary text
@@ -217,12 +235,15 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 					// qName is not an audio tag, a segmenting tag or the
 					// tag
 					// that holds the primary text
-					if (qName != ((ToolboxImporterProperties) getProperties())
-							.getPrimaryTextElement()
-							&& qName != ((ToolboxImporterProperties) getProperties())
-									.getSegmentingElement()) {
-						if (qName != ((ToolboxImporterProperties) getProperties())
-								.getAudioRecordElement()) {
+					if (!qName
+							.equals(((ToolboxImporterProperties) getProperties())
+									.getPrimaryTextElement())
+							&& !qName
+									.equals(((ToolboxImporterProperties) getProperties())
+											.getSegmentingElement())) {
+						if (!qName
+								.equals(((ToolboxImporterProperties) getProperties())
+										.getAudioRecordElement())) {
 							// save all annotations except audio and primary
 							// text as new span
 							if (!currentTokList.isEmpty()) {
@@ -233,7 +254,8 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 											.getSDocumentGraph().createSSpan(
 													currentTokList);
 								}
-								tokSpan.createSAnnotation(null, qName,
+
+								checkForAndRenameDoubledAnno(tokSpan, qName,
 										currentText.toString());
 
 							} else {
@@ -241,24 +263,28 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 								// yet
 								annoList.put(qName, currentText.toString());
 							}
+						} else {
+							if (!currentTokList.isEmpty()) {
+								// create audioDataSource for audio element
+								audio = createAudioData(currentText.toString());
+
+								// create audio relation for each token
+								createAudioRelForEachTok(currentTokList, audio);
+							} else {
+								audioList.put(qName, currentText.toString());
+							}
 						}
 					}
-					if (qName == ((ToolboxImporterProperties) getProperties())
-							.getAudioRecordElement()) {
-						// create audioDataSource for audio element
-						audio = createAudioData();
-						// create audio relation for each token
-						createAudioRelForEachTok(currentTokList, audio);
-
-					}
-				} else {
+				} else if (annosToAssociateWithWholeSegmentList.contains(qName)) {
 					// annotations are associated with all primary text tags of
 					// the current segment
 
-					if (qName != ((ToolboxImporterProperties) getProperties())
-							.getPrimaryTextElement()
-							&& qName != ((ToolboxImporterProperties) getProperties())
-									.getSegmentingElement()) {
+					if (!qName
+							.equals(((ToolboxImporterProperties) getProperties())
+									.getPrimaryTextElement())
+							&& !qName
+									.equals(((ToolboxImporterProperties) getProperties())
+											.getSegmentingElement())) {
 						// qName is neither a segmenting tag (e.g. refGroup) nor
 						// the
 						// tag that holds the primary text (e.g. unicode)
@@ -268,11 +294,10 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 						annoListForSegmentElem.put(qName,
 								currentText.toString());
 					}
-
 				}
 
-				if (qName == ((ToolboxImporterProperties) getProperties())
-						.getSegmentingElement()) {
+				if (qName.equals(((ToolboxImporterProperties) getProperties())
+						.getSegmentingElement())) {
 
 					if (!annoListForSegmentElem.isEmpty()) {
 						// create a span for annotations, associated to the
@@ -282,17 +307,17 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 
 						for (Entry<String, String> anno : annoListForSegmentElem
 								.entrySet()) {
-							if (anno.getKey() == ((ToolboxImporterProperties) getProperties())
-									.getAudioRecordElement()) {
+							if (anno.getKey()
+									.equals(((ToolboxImporterProperties) getProperties())
+											.getAudioRecordElement())) {
 								// check if the audio element shall be
 								// associated to the whole segment (e.g.
 								// to the whole refGroup)
-								audio = createAudioData();
+								audio = createAudioData(anno.getValue());
 								// create audio relation for each token
 								createAudioRelForEachTok(segmentTokList, audio);
-							}
-							if (anno.getKey() != ((ToolboxImporterProperties) getProperties())
-									.getAudioRecordElement()) {
+
+							} else {
 								// check if there are any annotations that shall
 								// be associated to the whole segment
 								if (((ToolboxImporterProperties) getProperties())
@@ -302,9 +327,10 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 											.getSDocumentGraph().createSSpan(
 													segmentTokList);
 								}
-								tokSpan.createSAnnotation(null, anno.getKey(),
-										anno.getValue());
+								checkForAndRenameDoubledAnno(tokSpan,
+										anno.getKey(), anno.getValue());
 							}
+							annoListForSegmentElem.remove(anno);
 						}
 
 					}
@@ -312,6 +338,7 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 					currentTokList = new BasicEList<SToken>();
 					segmentTokList = new BasicEList<SToken>();
 					annoList = new HashMap<String, String>();
+					annoListForSegmentElem = new HashMap<String, String>();
 				}
 
 				currentText = new StringBuilder();
@@ -325,19 +352,21 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 	 * 
 	 * @return {@link SAudioDataSource}
 	 */
-	private SAudioDataSource createAudioData() {
+	private SAudioDataSource createAudioData(String uriString) {
+
 		SAudioDataSource audio = SaltFactory.eINSTANCE.createSAudioDataSource();
 
-		File audioFile = new File(currentText.toString());
+		File audioFile = new File(uriString);
 
 		if (audioFile.exists()) {
 			// absolute path is given
-			audio.setSAudioReference(URI.createFileURI(currentText.toString()));
+			audio.setSAudioReference(URI.createFileURI(uriString));
 			getSDocument().getSDocumentGraph().addSNode(audio);
 			return audio;
 		} else {
 			// check if relative path is given
-			String absPath = getResourceURI().toFileString().replace(this.getResourceURI().lastSegment(), currentText.toString());
+			String absPath = getResourceURI().toFileString().replace(
+					this.getResourceURI().lastSegment(), uriString);
 
 			audioFile = new File(absPath);
 			if (audioFile.exists()) {
@@ -346,8 +375,8 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 				return audio;
 			} else {
 				// neither a relative nor an absolute path is given
-				ToolboxImporter.logger.warn("No audio file for path: "
-						+ audioFile.getAbsolutePath() + " found.");
+				ToolboxImporter.logger.warn("No audio file for path '"
+						+ audioFile.getAbsolutePath() + "' found.");
 			}
 			return null;
 		}
@@ -361,6 +390,7 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 	 * @param tokList
 	 * @param audio
 	 */
+
 	private void createAudioRelForEachTok(EList<SToken> tokList,
 			SAudioDataSource audio) {
 		if (!tokList.isEmpty() && audio != null) {
@@ -368,12 +398,102 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 			for (SToken tok : tokList) {
 				SAudioDSRelation audioRel = SaltFactory.eINSTANCE
 						.createSAudioDSRelation();
-
+//				File file = new File(audio.getSAudioReference().toFileString());
+//				double duration = computeDuration(file);
 				audioRel.setSToken(tok);
 				audioRel.setSAudioDS(audio);
+//				audioRel.setSStart(0.0);
+//				audioRel.setSEnd(duration);
 				getSDocument().getSDocumentGraph().addSRelation(audioRel);
 			}
 		}
 	}
 
+	/**
+	 * Method to check wether an annotation name was allready and if so, to
+	 * rename this annotation name. Further this method creates those
+	 * annotations.
+	 * 
+	 * @param tokSpan
+	 * @param name
+	 * @param value
+	 */
+	private void checkForAndRenameDoubledAnno(SSpan tokSpan, String name,
+			String value) {
+		if (!tokSpan.hasLabel(name)) {
+			tokSpan.createSAnnotation(null, name, value);
+		} else {
+			int i = 1;
+			String annoName = name;
+			while (tokSpan.hasLabel(annoName)
+					&& i <= tokSpan.getSAnnotations().size()) {
+				if (!tokSpan.hasLabel(annoName + "_" + i)) {
+					annoName = annoName + "_" + i;
+				}
+				i++;
+			}
+			ToolboxImporter.logger.warn("The annotation layer '" + name
+					+ "' allready exists and was replaced by '" + annoName
+					+ "'.");
+
+			tokSpan.createSAnnotation(null, annoName, value);
+		}
+	}
+
+	/**
+	 * Method to compute the duration of an audio file
+	 * 
+	 * @param file
+	 * @return {@link Double}
+	 */
+//	private double computeDuration(File file) {
+//
+//		 try {
+//		 AudioFileFormat fileFormat = AudioSystem.getAudioFileFormat(file);
+//		 if (fileFormat instanceof TAudioFileFormat) {
+//		 Map<?, ?> properties = ((TAudioFileFormat) fileFormat)
+//		 .properties();
+//		 String key = "duration";
+//		 Long microseconds = (Long) properties.get(key);
+//		 double mili = (microseconds / 1000);
+//		 double sec = (mili / 1000);
+//		 double min = sec / 100;
+//		 return min;
+//		 }
+//		
+//		 } catch (Exception e) {
+//		 ToolboxImporter.logger.warn("The end of the audioFile '"+ file +
+//		 "' could not be computed and will not be set.");
+//		 }
+//		 return 0.0;
+//		// second possibillity (doesn't work as well in pepper-context)
+//		double duration = 0.0;
+//		if (Files.getFileExtension(file.getAbsolutePath()).equals("mp3")) {
+//			try {
+//				AudioFile audioFile = AudioFileIO.read(new File(file
+//						.getAbsolutePath()));
+//				duration = ((MP3AudioHeader) audioFile.getAudioHeader())
+//						.getPreciseTrackLength();
+//				duration = duration / 100;
+//			} catch (Exception e) {
+//				ToolboxImporter.logger.warn("The end of the audioFile '" + file
+//						+ "' could not be computed and will not be set.");
+//			}
+//		} else {
+//			AudioInputStream audioInputStream;
+//			try {
+//				audioInputStream = AudioSystem.getAudioInputStream(file);
+//				AudioFormat format = audioInputStream.getFormat();
+//				long frames = audioInputStream.getFrameLength();
+//				duration = (frames + 0.0) / format.getFrameRate();
+//			} catch (UnsupportedAudioFileException e) {
+//				ToolboxImporter.logger.warn("The end of the audioFile '" + file
+//						+ "' could not be computed and will not be set.");
+//			} catch (IOException e) {
+//				ToolboxImporter.logger.warn("The end of the audioFile '" + file
+//						+ "' could not be computed and will not be set.");
+//			}
+//		}
+//		return duration;
+//	}
 }
