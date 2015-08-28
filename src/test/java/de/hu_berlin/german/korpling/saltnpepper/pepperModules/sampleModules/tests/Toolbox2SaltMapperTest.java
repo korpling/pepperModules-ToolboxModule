@@ -157,7 +157,7 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		xml.writeCharacters("example Gloss.");
 		xml.writeEndElement();
 		xml.writeStartElement(TAG_SOUND);
-		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.wav");
+		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.mp3");
 		xml.writeEndElement();
 		xml.writeStartElement(TAG_NOTE);
 		xml.writeCharacters("This is an example note.");
@@ -171,7 +171,7 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		xml.writeCharacters(TAG_TEXT2);
 		xml.writeEndElement();
 		xml.writeStartElement(TAG_SOUND);
-		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.wav");
+		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.mp3");
 		xml.writeEndElement();
 		xml.writeEndElement();
 		xml.writeEndDocument();
@@ -207,6 +207,46 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		xml.writeStartElement(TAG_UNICODE);
 		xml.writeCharacters(TAG_TEXT2);
 		xml.writeEndElement();
+		xml.writeEndElement();
+		xml.writeEndDocument();
+		xml.flush();
+		
+		return xml;
+	}
+	
+	public XMLStreamWriter createFifthSample() throws XMLStreamException {
+		xml.writeStartDocument();
+		xml.writeStartElement(TAG_DATABASE);
+		xml.writeStartElement(TAG_REF_GROUP);
+		xml.writeStartElement(TAG_REF);
+		xml.writeCharacters("exampleText");
+		xml.writeEndElement();
+		xml.writeStartElement(TAG_UNICODE);
+		xml.writeCharacters(TAG_TEXT1);
+		xml.writeEndElement();
+		xml.writeStartElement(TAG_GLOSS);
+		xml.writeCharacters("example Gloss.");
+		xml.writeEndElement();
+		xml.writeStartElement(TAG_SOUND);
+		xml.writeCharacters(PepperTestUtil.getTestResources() + "exampleSound.mp3");
+		xml.writeEndElement();
+		xml.writeStartElement(TAG_NOTE);
+		xml.writeCharacters("This is an example note.");
+		xml.writeEndElement();
+		xml.writeEndElement();
+		xml.writeStartElement(TAG_REF_GROUP);
+		xml.writeStartElement(TAG_REF);
+		xml.writeCharacters("secondExampleText");
+		xml.writeEndElement();
+		xml.writeStartElement(TAG_UNICODE);
+		xml.writeCharacters(TAG_TEXT2);
+		xml.writeEndElement();
+		xml.writeStartElement(TAG_GLOSS);
+		xml.writeCharacters("second example Gloss.");
+		xml.writeEndElement();
+//		xml.writeStartElement(TAG_SOUND);
+//		xml.writeCharacters(PepperTestUtil.getTestResources() + "blub.mp3");
+//		xml.writeEndElement();
 		xml.writeEndElement();
 		xml.writeEndDocument();
 		xml.flush();
@@ -508,8 +548,8 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().get(0));
 		assertEquals(8,getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().size());
 		assertEquals(2,getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().size());
-		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.wav",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).getSAudioDS().getSAudioReference().toFileString());
-		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.wav",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(1).getSAudioDS().getSAudioReference().toFileString());
+		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.mp3",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).getSAudioDS().getSAudioReference().toFileString());
+		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.mp3",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(1).getSAudioDS().getSAudioReference().toFileString());
 		}
 	
 	/**
@@ -598,5 +638,30 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		assertEquals(2, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().size());
 		assertEquals(0, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(3).getSAnnotations().size());
 		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(4).getSAnnotations().size());
+	}
+	
+	/**
+	 * test for correct generation of SAudioDataSources/ SAudioRelations with only one span and a concatenated STextualDS for each primary text (only one span for all annotations).
+	 * 
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 */
+	@Test
+	public void testNonExistingSound() throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
+		
+		createFifthSample();
+		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_CONCATENATE_TEXT)).setValue(true);
+		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_TOKENIZE_TEXT)).setValue(true);
+		((PepperModuleProperty<Boolean>)getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_NEW_SPAN)).setValue(false);
+		start(getFixture(), outStream.toString());
+		
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources());
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations());
+		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().get(0));
+		assertEquals(5,getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().size());
+		assertEquals(1,getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().size());
+		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.mp3",getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).getSAudioDS().getSAudioReference().toFileString());
 	}
 }
