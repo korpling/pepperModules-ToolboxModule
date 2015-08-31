@@ -56,12 +56,6 @@
   </scm>
  
   <dependencies>
-    
-  <dependency>
-	<groupId>stax</groupId>
-	<artifactId>stax</artifactId>
-	<version>1.2.0</version>
-</dependency>
 <dependency>
 	<groupId>org</groupId>
 	<artifactId>jaudiotagger</artifactId>
