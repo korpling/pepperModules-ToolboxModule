@@ -89,6 +89,7 @@
 					<Bundle-Version>${project.version}</Bundle-Version>
 					<Bundle-RequiredExecutionEnvironment>JavaSE-${java.version}</Bundle-RequiredExecutionEnvironment>
 					<Service-Component>${allServiceComponents}</Service-Component>
+					<Import-Package>!sun.security.action, *</Import-Package>
 					<Bundle-ClassPath>
 						.,{maven-dependencies},lib/jaudiotagger-2.0.3.jar
 					</Bundle-ClassPath>
