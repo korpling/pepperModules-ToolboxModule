@@ -18,6 +18,7 @@
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,12 +28,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.mp3.MP3AudioHeader;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
+
+import com.google.common.io.Files;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
@@ -303,8 +314,9 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 	}
 
 	/**
-	 * Method to create a {@link SAudioDataSource} and to set a SAudioReference
-	 * to a (relative or absolute) path, given in the xml file
+	 * Method to create a {@link SAudioDataSource} and to set a
+	 * {@link SAudioDataSource#setSAudioReference(URI)} to a (relative or
+	 * absolute) path, given in the xml file
 	 * 
 	 * @return {@link SAudioDataSource}
 	 */
@@ -337,9 +349,9 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 	}
 
 	/**
-	 * Method to create a SAudioRelation for each {@link SToken} from a given
-	 * {@link EList} (tokList) to a given {@link SAudioDataSource} and to add it
-	 * to the {@link SDocumentGraph}
+	 * Method to create a {@link SAudioDSRelation} for each {@link SToken} from
+	 * a given {@link EList} (tokList) to a given {@link SAudioDataSource} and
+	 * to add it to the {@link SDocumentGraph}
 	 * 
 	 * @param tokList
 	 * @param audio
@@ -350,20 +362,19 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 			// create an audio relation for each token
 			for (SToken tok : tokList) {
 				SAudioDSRelation audioRel = SaltFactory.eINSTANCE.createSAudioDSRelation();
-				// File file = new
-				// File(audio.getSAudioReference().toFileString());
-				// double duration = computeDuration(file);
+				File file = new File(audio.getSAudioReference().toFileString());
+				double duration = computeDuration(file);
 				audioRel.setSToken(tok);
 				audioRel.setSAudioDS(audio);
-				// audioRel.setSStart(0.0);
-				// audioRel.setSEnd(duration);
+				audioRel.setSStart(0.0);
+				audioRel.setSEnd(duration);
 				getSDocument().getSDocumentGraph().addSRelation(audioRel);
 			}
 		}
 	}
 
 	/**
-	 * Method to check wether an annotation name was allready and if so, to
+	 * Method to check whether an annotation name was already and if so, to
 	 * rename this annotation name. Further this method creates those
 	 * annotations.
 	 * 
@@ -395,54 +406,29 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 	 * @param file
 	 * @return {@link Double}
 	 */
-	// private double computeDuration(File file) {
-	//
-	// try {
-	// AudioFileFormat fileFormat = AudioSystem.getAudioFileFormat(file);
-	// if (fileFormat instanceof TAudioFileFormat) {
-	// Map<?, ?> properties = ((TAudioFileFormat) fileFormat)
-	// .properties();
-	// String key = "duration";
-	// Long microseconds = (Long) properties.get(key);
-	// double mili = (microseconds / 1000);
-	// double sec = (mili / 1000);
-	// double min = sec / 100;
-	// return min;
-	// }
-	//
-	// } catch (Exception e) {
-	// ToolboxImporter.logger.warn("The end of the audioFile '"+ file +
-	// "' could not be computed and will not be set.");
-	// }
-	// return 0.0;
-	// // second possibillity (doesn't work as well in pepper-context)
-	// double duration = 0.0;
-	// if (Files.getFileExtension(file.getAbsolutePath()).equals("mp3")) {
-	// try {
-	// AudioFile audioFile = AudioFileIO.read(new File(file
-	// .getAbsolutePath()));
-	// duration = ((MP3AudioHeader) audioFile.getAudioHeader())
-	// .getPreciseTrackLength();
-	// duration = duration / 100;
-	// } catch (Exception e) {
-	// ToolboxImporter.logger.warn("The end of the audioFile '" + file
-	// + "' could not be computed and will not be set.");
-	// }
-	// } else {
-	// AudioInputStream audioInputStream;
-	// try {
-	// audioInputStream = AudioSystem.getAudioInputStream(file);
-	// AudioFormat format = audioInputStream.getFormat();
-	// long frames = audioInputStream.getFrameLength();
-	// duration = (frames + 0.0) / format.getFrameRate();
-	// } catch (UnsupportedAudioFileException e) {
-	// ToolboxImporter.logger.warn("The end of the audioFile '" + file
-	// + "' could not be computed and will not be set.");
-	// } catch (IOException e) {
-	// ToolboxImporter.logger.warn("The end of the audioFile '" + file
-	// + "' could not be computed and will not be set.");
-	// }
-	// }
-	// return duration;
-	// }
+	private double computeDuration(File file) {
+		double duration = 0.0;
+		if (Files.getFileExtension(file.getAbsolutePath()).equalsIgnoreCase("mp3")) {
+			try {
+				AudioFile audioFile = AudioFileIO.read(new File(file.getAbsolutePath()));
+				duration = ((MP3AudioHeader) audioFile.getAudioHeader()).getPreciseTrackLength();
+				duration = duration / 100;
+			} catch (Exception e) {
+				ToolboxImporter.logger.warn("The end of the audioFile '" + file + "' could not be computed and will not be set.");
+			}
+		} else {
+			AudioInputStream audioInputStream;
+			try {
+				audioInputStream = AudioSystem.getAudioInputStream(file);
+				AudioFormat format = audioInputStream.getFormat();
+				long frames = audioInputStream.getFrameLength();
+				duration = (frames + 0.0) / format.getFrameRate();
+			} catch (UnsupportedAudioFileException e) {
+				ToolboxImporter.logger.warn("The end of the audioFile '" + file + "' could not be computed and will not be set.");
+			} catch (IOException e) {
+				ToolboxImporter.logger.warn("The end of the audioFile '" + file + "' could not be computed and will not be set.");
+			}
+		}
+		return duration;
+	}
 }
