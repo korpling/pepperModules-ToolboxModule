@@ -17,47 +17,42 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.sampleModules.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
-import org.junit.Test;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.CorpusDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperImporterTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.ToolboxImporter;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
 /**
- * This is a dummy implementation of a JUnit test for testing the {@link ToolboxImporter} class.
- * Feel free to adapt and enhance this test class for real tests to check the work of your importer.
- * If you are not confirm with JUnit, please have a look at <a href="http://www.vogella.com/tutorials/JUnit/article.html">
- * http://www.vogella.com/tutorials/JUnit/article.html</a>.
- * <br/>
- * Please note, that the test class is derived from {@link PepperImporterTest}. The usage of this class
- * should simplfy your work and allows you to test only your single importer in the Pepper environment.
+ * This is a dummy implementation of a JUnit test for testing the
+ * {@link ToolboxImporter} class. Feel free to adapt and enhance this test class
+ * for real tests to check the work of your importer. If you are not confirm
+ * with JUnit, please have a look at <a
+ * href="http://www.vogella.com/tutorials/JUnit/article.html">
+ * http://www.vogella.com/tutorials/JUnit/article.html</a>. <br/>
+ * Please note, that the test class is derived from {@link PepperImporterTest}.
+ * The usage of this class should simplfy your work and allows you to test only
+ * your single importer in the Pepper environment.
+ * 
  * @author Florian Zipser
  *
  */
-public class ToolboxImporterTest extends PepperImporterTest{
+public class ToolboxImporterTest extends PepperImporterTest {
 	/**
-	 * This method is called by the JUnit environment each time before a test case starts. 
-	 * So each time a method annotated with @Test is called. This enables, that each method 
-	 * could run in its own environment being not influenced by before or after running test 
-	 * cases. 
+	 * This method is called by the JUnit environment each time before a test
+	 * case starts. So each time a method annotated with @Test is called. This
+	 * enables, that each method could run in its own environment being not
+	 * influenced by before or after running test cases.
 	 */
 	@Before
-	public void setUp(){
+	public void setUp() {
 		setFixture(new ToolboxImporter());
-		
-		FormatDesc formatDef= new FormatDesc();
+
+		FormatDesc formatDef = new FormatDesc();
 		formatDef.setFormatName("toolbox-xml");
 		formatDef.setFormatVersion("1.0");
 		this.supportedFormatsCheck.add(formatDef);
 	}
-	//TODO add further tests for any test cases you can think of and which are necessary
+	// TODO add further tests for any test cases you can think of and which are
+	// necessary
 }

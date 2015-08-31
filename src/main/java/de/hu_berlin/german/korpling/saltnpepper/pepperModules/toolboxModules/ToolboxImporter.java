@@ -78,14 +78,12 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
  *
  */
 @Component(name = "ToolboxImporterComponent", factory = "PepperImporterComponentFactory")
-public class ToolboxImporter extends PepperImporterImpl implements
-		PepperImporter {
+public class ToolboxImporter extends PepperImporterImpl implements PepperImporter {
 	// =================================================== mandatory
 	// ===================================================
 	// this is a logger, for recording messages during program process, like
 	// debug messages
-	public static final Logger logger = LoggerFactory
-			.getLogger(ToolboxImporter.class);
+	public static final Logger logger = LoggerFactory.getLogger(ToolboxImporter.class);
 
 	/**
 	 * <strong>OVERRIDE THIS METHOD FOR CUSTOMIZATION</strong> <br/>
@@ -100,8 +98,7 @@ public class ToolboxImporter extends PepperImporterImpl implements
 		this.setVersion("0.0.1");
 		this.setDesc("This importer transforms data of toolbox format to salt. The tag that includes the textual data is configurable.");
 		this.setSupplierContact(URI.createURI("saltnpepper@lists.hu-berlin.de"));
-		this.setSupplierHomepage(URI
-				.createURI("saltnpepper@lists.hu-berlin.de"));
+		this.setSupplierHomepage(URI.createURI("saltnpepper@lists.hu-berlin.de"));
 		this.addSupportedFormat("toolbox-xml", "1.0", null);
 		this.getSDocumentEndings().add("xml");
 		this.setProperties(new ToolboxImporterProperties());
@@ -134,8 +131,7 @@ public class ToolboxImporter extends PepperImporterImpl implements
 	@Override
 	public PepperMapper createPepperMapper(SElementId sElementId) {
 		PepperMapper mapper = new Toolbox2SaltMapper();
-		if (sElementId.getIdentifiableElement() != null
-				&& sElementId.getIdentifiableElement() instanceof SDocument) {
+		if (sElementId.getIdentifiableElement() != null && sElementId.getIdentifiableElement() instanceof SDocument) {
 			URI resource = getSElementId2ResourceTable().get(sElementId);
 			mapper.setResourceURI(resource);
 		}

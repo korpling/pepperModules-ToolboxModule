@@ -9,5 +9,5 @@ public interface ToolboxXmlDictionary {
 	public static final String TAG_GLOSS = "gloss";
 	public static final String TAG_UNICODE = "unicode";
 	public static final String TAG_DATABASE = "database";
-	
+
 }
