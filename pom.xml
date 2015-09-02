@@ -51,6 +51,7 @@
 		<name>Humboldt-Universit&#228;t zu Berlin, INRIA</name>
 	</organization>
 	<scm>
+		<connection>scm:git:git://github.com/korpling/pepperModules-ToolboxModules.git</connection>
 		<developerConnection>git@github.com:korpling/pepperModules-ToolboxModules.git</developerConnection>
 		<url>https://github.com/korpling/pepperModules-ToolboxModules.git</url>
 	</scm>
