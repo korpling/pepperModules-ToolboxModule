@@ -52,7 +52,7 @@
 	</organization>
 	<scm>
 		<connection>scm:git:git://github.com/korpling/pepperModules-ToolboxModules.git</connection>
-		<developerConnection>scm:git@github.com:korpling/pepperModules-ToolboxModules.git</developerConnection>
+		<developerConnection>scm:git:git@github.com:korpling/pepperModules-ToolboxModules.git</developerConnection>
 		<url>https://github.com/korpling/pepperModules-ToolboxModules.git</url>
 	</scm>
 
