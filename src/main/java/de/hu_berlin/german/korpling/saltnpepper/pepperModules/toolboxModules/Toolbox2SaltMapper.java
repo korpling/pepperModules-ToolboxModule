@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -360,21 +362,22 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 	private void createAudioRelForEachTok(EList<SToken> tokList, SAudioDataSource audio) {
 		if (!tokList.isEmpty() && audio != null) {
 			// create an audio relation for each token
+			SAudioDSRelation audioRel = null;
 			for (SToken tok : tokList) {
-				SAudioDSRelation audioRel = SaltFactory.eINSTANCE.createSAudioDSRelation();
-				File file = new File(audio.getSAudioReference().toFileString());
-				double duration = computeDuration(file);
+				audioRel = SaltFactory.eINSTANCE.createSAudioDSRelation();
 				audioRel.setSToken(tok);
 				audioRel.setSAudioDS(audio);
-				audioRel.setSStart(0.0);
-				audioRel.setSEnd(duration);
 				getSDocument().getSDocumentGraph().addSRelation(audioRel);
 			}
+			File file = new File(audio.getSAudioReference().toFileString());
+			double duration = computeDuration(file);
+			getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).setSStart(0.0);
+			getSDocument().getSDocumentGraph().getSAudioDSRelations().get(tokList.size() - 1).setSEnd(duration);
 		}
 	}
 
 	/**
-	 * Method to check whether an annotation name was already and if so, to
+	 * Method to check whether an annotation name was already set and if so, to
 	 * rename this annotation name. Further this method creates those
 	 * annotations.
 	 * 
@@ -407,6 +410,7 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 	 * @return {@link Double}
 	 */
 	private double computeDuration(File file) {
+		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
 		double duration = 0.0;
 		if (Files.getFileExtension(file.getAbsolutePath()).equalsIgnoreCase("mp3")) {
 			try {
