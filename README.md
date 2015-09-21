@@ -96,6 +96,7 @@ For each other element spans (SSpan) are used. Those elements are interpreted as
 
 ### Properties
 The table  contains an overview of all usable properties to customize the behaviour of this pepper module. The following section contains a close description to each single property and describes the resulting differences in the mapping to the salt model.
+
 | Name of property                              | Type of property | optional/mandatory | default value      |
 |-----------------------------------------------|------------------|--------------------|--------------------|
 | [textElement](#text)         | String          | optional           | unicode              |
