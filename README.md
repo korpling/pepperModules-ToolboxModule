@@ -35,7 +35,7 @@ bash pepperStart.sh
 
 Then type in command *is* and the path from where to install the module:
 ```
-pepper> update de.hu_berlin.german.korpling.saltnpepper::pepperModules-pepperModules-EXMARaLDAModules::https://korpling.german.hu-berlin.de/maven2/
+pepper> update de.hu_berlin.german.korpling.saltnpepper::pepperModules-pepperModules-ToolboxModules::https://korpling.german.hu-berlin.de/maven2/
 ```
 
 ## Usage
@@ -138,3 +138,67 @@ would result in two nodes containing the text and the assigned audio data by def
 [Node1]: This is a primary text.
 [Node2]{sound}: path/to/sound.mp3
 ```
+
+<a name="seg"></a>
+### segmentingElement
+
+Defines the element for the segementation of the STextualDS.
+For example this
+```xml
+<refGroup>
+  <unicode>This is a primary text.</unicode>
+</refGroup>
+<refGroup>
+  <unicode>This is a second primary text.</unicode>
+</refGroup>
+```
+would result in two nodes (STextualDS) containing the respective primary text by default.
+```
+[Node1]: This is a primary text.
+[Node2]: This is a second primary text.
+```
+
+<a name="conc"></a>
+### concatenateText
+
+Defines, if the textual data shall be concatenated or if a new string object shall be created. This has mainly reasons of efficiency.
+
+<a name="tok"></a>
+### tokenizeText
+
+Defines, if the textual data shall be tokenized.
+If you set this option to false, the primary text will not be split into smaller segments and the whole primary text will be interpreted as one token, eg:
+```xml
+<unicode>This is a primary text.</unicode>
+```
+will be interpreted as
+```
+[Node1]{token}: This is a primary text.
+```
+if this option is set to false.
+
+<a name="asso"></a>
+### associateWithAllToks
+
+If one segment (like a 'refGroup' element) holds more than one entry of primary text (eg. 'unicode') and you wish to associate some annotations not only to the current primary text entry, but to the whole primary text of the current segment, you can enumerate those annotation names here as a comma seperated string.
+For instance, if your list of annotation names contains 'annoThrd', this:
+```xml
+<refGroup>
+  <unicode>This is a primary text.</unicode>
+  <annoFirst>This is an annotation associated to the first unicode text.</anno>
+  <unicode>This is a second primary text.</unicode>
+  <annoSec>This is an annotation associated to the second unicode text.</anno>
+  <annoThrd>This is an annotation associated to all unicode texts of the refGroup.</anno>
+</refGroup>
+```
+would result in an annotion layer 'annoFirst', associated to the text span 'This is a primary text.', an annotation layer 'annoSec', associated to the text span 'This is a second primary text.' and a third annotation layer 'annoThrd', associated to all primary texts of the refGroup 'This is a primary text. This is a second primary text.'.
+
+<a name="span"></a>
+### newSpan
+
+Defines, whether a new span for the primary text will be created  for each annotation. This has mainly reasons of efficiency.
+
+<a name="root"></a>
+### rootElement
+
+Defines the name of the root element of the xml file.
