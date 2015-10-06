@@ -84,7 +84,7 @@ This project has been funded by the [department of corpus linguistics and morpho
 
 
 # <a name="importer">ToolboxImporter</a>
-The ToolboxImporter imports data coming from [Toolbox](http://www-01.sil.org/computing/toolbox/) files to a [Salt](https://github.com/korpling/salt) model. This importer provides a wide range of customization possibilities via the here described set of properties. Before we talk about the possibility of customizing the mapping, we describe the general and default mapping from  the Toolbox format to a Salt model.
+The ToolboxImporter imports data coming from [Toolbox's](http://www-01.sil.org/computing/toolbox/) xml format to a [Salt](https://github.com/korpling/salt) model. This importer provides a wide range of customization possibilities via the here described set of properties. Before we talk about the possibility of customizing the mapping, we describe the general and default mapping from  the Toolbox format to a Salt model.
 
 ### Mapping to Salt
 
