@@ -30,6 +30,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.corpus_tools.salt.SaltFactory;
 import org.eclipse.emf.common.util.URI;
 import org.junit.After;
 import org.junit.Before;
@@ -41,8 +42,6 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperTestU
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.Toolbox2SaltMapper;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.ToolboxImporterProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.ToolboxXmlDictionary;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 
 /**
  * Maps a Toolbox structure to a Salt {@link SDocumentGraph}.
@@ -74,9 +73,9 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		XMLOutputFactory outFactory = XMLOutputFactory.newFactory();
 		xml = outFactory.createXMLStreamWriter(outStream);
 		setFixture(new Toolbox2SaltMapper());
-		getFixture().setSDocument(SaltFactory.eINSTANCE.createSDocument());
-		getFixture().getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
-		getFixture().getSDocument().setSName("irengdNName");
+		getFixture().setDocument(SaltFactory.createSDocument());
+		getFixture().getDocument().setDocumentGraph(SaltFactory.createSDocumentGraph());
+		getFixture().getDocument().setName("irengdNName");
 		getFixture().setProperties(new ToolboxImporterProperties());
 	}
 
@@ -98,8 +97,8 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 				writer.close();
 		}
 
-		this.getFixture().setResourceURI(URI.createFileURI(tmpFile.getAbsolutePath()));
-		this.getFixture().mapSDocument();
+		getFixture().setResourceURI(URI.createFileURI(tmpFile.getAbsolutePath()));
+		getFixture().mapSDocument();
 	}
 
 	public XMLStreamWriter createFirstSample() throws XMLStreamException {
@@ -284,9 +283,9 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_CONCATENATE_TEXT)).setValue(true);
 		start(getFixture(), outStream.toString());
 
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0));
-		assertEquals(TAG_TEXT1 + TAG_TEXT2, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getTextualDSs().size());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTextualDSs().get(0));
+		assertEquals(TAG_TEXT1 + TAG_TEXT2, getFixture().getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
 	}
 
 	/**
@@ -305,12 +304,12 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_CONCATENATE_TEXT)).setValue(false);
 		start(getFixture(), outStream.toString());
 
-		assertEquals(2, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0));
-		assertEquals(TAG_TEXT1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(1));
-		assertEquals(TAG_TEXT2, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(1).getSText());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens());
+		assertEquals(2, getFixture().getDocument().getDocumentGraph().getTextualDSs().size());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTextualDSs().get(0));
+		assertEquals(TAG_TEXT1, getFixture().getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTextualDSs().get(1));
+		assertEquals(TAG_TEXT2, getFixture().getDocument().getDocumentGraph().getTextualDSs().get(1).getText());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens());
 	}
 
 	/**
@@ -329,23 +328,23 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_TOKENIZE_TEXT)).setValue(true);
 		start(getFixture(), outStream.toString());
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0));
-		assertEquals("this", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1));
-		assertEquals("is", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(2));
-		assertEquals("an", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(2)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(3));
-		assertEquals("example", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(3)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(4));
-		assertEquals(".", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(4)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(5));
-		assertEquals("second", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(5)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(6));
-		assertEquals("example", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(6)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(7));
-		assertEquals(".", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(7)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(0));
+		assertEquals("this", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(0)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(1));
+		assertEquals("is", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(1)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(2));
+		assertEquals("an", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(2)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(3));
+		assertEquals("example", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(3)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(4));
+		assertEquals(".", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(4)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(5));
+		assertEquals("second", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(5)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(6));
+		assertEquals("example", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(6)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(7));
+		assertEquals(".", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(7)));
 
 	}
 
@@ -366,11 +365,11 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_TOKENIZE_TEXT)).setValue(false);
 		start(getFixture(), outStream.toString());
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0));
-		assertEquals("this is an example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1));
-		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(0));
+		assertEquals("this is an example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(0)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(1));
+		assertEquals("second example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(1)));
 	}
 
 	/**
@@ -390,23 +389,23 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_TOKENIZE_TEXT)).setValue(true);
 		start(getFixture(), outStream.toString());
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0));
-		assertEquals("this", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1));
-		assertEquals("is", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(2));
-		assertEquals("an", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(2)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(3));
-		assertEquals("example", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(3)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(4));
-		assertEquals(".", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(4)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(5));
-		assertEquals("second", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(5)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(6));
-		assertEquals("example", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(6)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(7));
-		assertEquals(".", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(7)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(0));
+		assertEquals("this", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(0)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(1));
+		assertEquals("is", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(1)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(2));
+		assertEquals("an", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(2)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(3));
+		assertEquals("example", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(3)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(4));
+		assertEquals(".", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(4)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(5));
+		assertEquals("second", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(5)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(6));
+		assertEquals("example", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(6)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(7));
+		assertEquals(".", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(7)));
 	}
 
 	/**
@@ -426,11 +425,11 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_TOKENIZE_TEXT)).setValue(false);
 		start(getFixture(), outStream.toString());
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0));
-		assertEquals("this is an example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1));
-		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSTokens().get(1)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(0));
+		assertEquals("this is an example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(0)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTokens().get(1));
+		assertEquals("second example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getTokens().get(1)));
 	}
 
 	/**
@@ -451,11 +450,11 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_NEW_SPAN)).setValue(true);
 		start(getFixture(), outStream.toString());
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0));
-		assertEquals("this is an example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(3));
-		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(3)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getSpans());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getSpans().get(0));
+		assertEquals("this is an example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getSpans().get(0)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getSpans().get(3));
+		assertEquals("second example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getSpans().get(3)));
 	}
 
 	/**
@@ -476,20 +475,17 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_NEW_SPAN)).setValue(true);
 		start(getFixture(), outStream.toString());
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAnnotations());
-		assertEquals("ref", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSName());
-		assertEquals("exampleText", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSValue());
-		assertEquals("gloss", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().get(0).getSName());
-		assertEquals("example Gloss.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().get(0).getSValue());
-		assertEquals("note", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().get(0).getSName());
-		assertEquals("This is an example note.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().get(0).getSValue());
-		assertEquals("ref", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(3).getSAnnotations().get(0).getSName());
-		assertEquals("secondExampleText", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(3).getSAnnotations().get(0).getSValue());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().size());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().size());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().size());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(3).getSAnnotations().size());
-		assertEquals(4, getFixture().getSDocument().getSDocumentGraph().getSSpans().size());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getAnnotations());
+		
+		assertEquals("exampleText", getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotation("ref").getValue());
+		assertEquals("example Gloss.", getFixture().getDocument().getDocumentGraph().getSpans().get(1).getAnnotation("gloss").getValue());
+		assertEquals("This is an example note.", getFixture().getDocument().getDocumentGraph().getSpans().get(2).getAnnotation("note").getValue());
+		assertEquals("secondExampleText", getFixture().getDocument().getDocumentGraph().getSpans().get(3).getAnnotation("ref").getValue());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotations().size());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getSpans().get(1).getAnnotations().size());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getSpans().get(2).getAnnotations().size());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getSpans().get(3).getAnnotations().size());
+		assertEquals(4, getFixture().getDocument().getDocumentGraph().getSpans().size());
 	}
 
 	/**
@@ -510,11 +506,11 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_NEW_SPAN)).setValue(false);
 		start(getFixture(), outStream.toString());
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0));
-		assertEquals("this is an example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1));
-		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getSpans());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getSpans().get(0));
+		assertEquals("this is an example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getSpans().get(0)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getSpans().get(1));
+		assertEquals("second example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getSpans().get(1)));
 
 	}
 
@@ -536,21 +532,17 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_NEW_SPAN)).setValue(false);
 		start(getFixture(), outStream.toString());
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAnnotations());
-		assertEquals("ref", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSName());
-		assertEquals("exampleText", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSValue());
-		assertEquals("gloss", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(1).getSName());
-		assertEquals("example Gloss.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(1).getSValue());
-		assertEquals("note", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(2).getSName());
-		assertEquals("This is an example note.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(2).getSValue());
-		assertEquals("ref", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().get(0).getSName());
-		assertEquals("secondExampleText", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().get(0).getSValue());
-		assertEquals(3, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().size());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().size());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getAnnotations());
+		assertEquals("exampleText", getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotation("ref").getValue());
+		assertEquals("example Gloss.", getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotation("gloss").getValue());
+		assertEquals("This is an example note.", getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotation("note").getValue());
+		assertEquals("secondExampleText", getFixture().getDocument().getDocumentGraph().getSpans().get(1).getAnnotation("ref").getValue());
+		assertEquals(3, getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotations().size());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getSpans().get(1).getAnnotations().size());
 	}
 
 	/**
-	 * test for correct generation of SAudioDataSources/ SAudioRelations with
+	 * test for correct generation of SMedialDSs/ SAudioRelations with
 	 * only one span and a concatenated STextualDS for each primary text (only
 	 * one span for all annotations).
 	 * 
@@ -568,17 +560,17 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_NEW_SPAN)).setValue(true);
 		start(getFixture(), outStream.toString());
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().get(0));
-		assertEquals(8, getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().size());
-		assertEquals(2, getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().size());
-		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.mp3", getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).getSAudioDS().getSAudioReference().toFileString());
-		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.mp3", getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(1).getSAudioDS().getSAudioReference().toFileString());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getMedialDSs());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getMedialRelations());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getMedialDSs().get(0));
+		assertEquals(8, getFixture().getDocument().getDocumentGraph().getMedialRelations().size());
+		assertEquals(2, getFixture().getDocument().getDocumentGraph().getMedialDSs().size());
+		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.mp3", getFixture().getDocument().getDocumentGraph().getMedialRelations().get(0).getTarget().getMediaReference().toFileString());
+		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.mp3", getFixture().getDocument().getDocumentGraph().getMedialRelations().get(1).getTarget().getMediaReference().toFileString());
 	}
 
 	/**
-	 * test for correct generation of SAudioDataSources/ SAudioRelations with
+	 * test for correct generation of SMedialDSs/ SAudioRelations with
 	 * only one span and a concatenated STextualDS for each primary text (only
 	 * one span for all annotations).
 	 * 
@@ -597,34 +589,30 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_ASSOCIATE_WITH_ALL_TOKEN)).setValue(null);
 		start(getFixture(), outStream.toString());
 
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0));
-		assertEquals(TAG_TEXT1 + TAG_TEXT2 + TAG_TEXT2, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans());
-		assertEquals(3, getFixture().getSDocument().getSDocumentGraph().getSSpans().size());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0));
-		assertEquals("this is an example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1));
-		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1)));
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2));
-		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2)));
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getTextualDSs().size());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTextualDSs().get(0));
+		assertEquals(TAG_TEXT1 + TAG_TEXT2 + TAG_TEXT2, getFixture().getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getSpans());
+		assertEquals(3, getFixture().getDocument().getDocumentGraph().getSpans().size());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getSpans().get(0));
+		assertEquals("this is an example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getSpans().get(0)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getSpans().get(1));
+		assertEquals("second example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getSpans().get(1)));
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getSpans().get(2));
+		assertEquals("second example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getSpans().get(2)));
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAnnotations());
-		assertEquals("ref", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSName());
-		assertEquals("exampleText", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSValue());
-		assertEquals("gloss", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(1).getSName());
-		assertEquals("example Gloss.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(1).getSValue());
-		assertEquals("note", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().get(0).getSName());
-		assertEquals("This is an example note.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().get(0).getSValue());
-		assertEquals("ref", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().get(0).getSName());
-		assertEquals("secondExampleText", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().get(0).getSValue());
-		assertEquals(2, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().size());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().size());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().size());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getAnnotations());
+		assertEquals("exampleText", getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotation("ref").getValue());
+		assertEquals("example Gloss.", getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotation("gloss").getValue());
+		assertEquals("This is an example note.", getFixture().getDocument().getDocumentGraph().getSpans().get(1).getAnnotation("note").getValue());
+		assertEquals("secondExampleText", getFixture().getDocument().getDocumentGraph().getSpans().get(2).getAnnotation("ref").getValue());
+		assertEquals(2, getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotations().size());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getSpans().get(1).getAnnotations().size());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getSpans().get(2).getAnnotations().size());
 	}
 
 	/**
-	 * test for correct generation of SAudioDataSources/ SAudioRelations with
+	 * test for correct generation of SMedialDSs/ SAudioRelations with
 	 * only one span and a concatenated STextualDS for each primary text (only
 	 * one span for all annotations).
 	 * 
@@ -643,33 +631,30 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_ASSOCIATE_WITH_ALL_TOKEN)).setValueString("ref, note");
 		start(getFixture(), outStream.toString());
 
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().size());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0));
-		assertEquals(TAG_TEXT1 + TAG_TEXT2 + TAG_TEXT2, getFixture().getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans());
-		assertEquals(5, getFixture().getSDocument().getSDocumentGraph().getSSpans().size());
-		assertEquals("this is an example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0)));
-		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1)));
-		assertEquals("this is an example.second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2)));
-		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(3)));
-		assertEquals("second example.", getFixture().getSDocument().getSDocumentGraph().getSText(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(4)));
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getTextualDSs().size());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getTextualDSs().get(0));
+		assertEquals(TAG_TEXT1 + TAG_TEXT2 + TAG_TEXT2, getFixture().getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getSpans());
+		assertEquals(5, getFixture().getDocument().getDocumentGraph().getSpans().size());
+		assertEquals("this is an example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getSpans().get(0)));
+		assertEquals("second example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getSpans().get(1)));
+		assertEquals("this is an example.second example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getSpans().get(2)));
+		assertEquals("second example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getSpans().get(3)));
+		assertEquals("second example.", getFixture().getDocument().getDocumentGraph().getText(getFixture().getDocument().getDocumentGraph().getSpans().get(4)));
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations());
-		assertEquals("gloss", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSName());
-		assertEquals("example Gloss.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0).getSValue());
-		assertEquals("ref", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().get(0).getSName());
-		assertEquals("exampleText", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().get(0).getSValue());
-		assertEquals("note", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().get(1).getSName());
-		assertEquals("This is an example note.", getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().get(1).getSValue());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().size());
-		assertEquals(0, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(1).getSAnnotations().size());
-		assertEquals(2, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(2).getSAnnotations().size());
-		assertEquals(0, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(3).getSAnnotations().size());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(4).getSAnnotations().size());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotations());
+		assertEquals("example Gloss.", getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotation("gloss").getValue());
+		assertEquals("exampleText", getFixture().getDocument().getDocumentGraph().getSpans().get(2).getAnnotation("ref").getValue());
+		assertEquals("This is an example note.", getFixture().getDocument().getDocumentGraph().getSpans().get(2).getAnnotation("note").getValue());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotations().size());
+		assertEquals(0, getFixture().getDocument().getDocumentGraph().getSpans().get(1).getAnnotations().size());
+		assertEquals(2, getFixture().getDocument().getDocumentGraph().getSpans().get(2).getAnnotations().size());
+		assertEquals(0, getFixture().getDocument().getDocumentGraph().getSpans().get(3).getAnnotations().size());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getSpans().get(4).getAnnotations().size());
 	}
 
 	/**
-	 * test for correct generation of SAudioDataSources/ SAudioRelations with
+	 * test for correct generation of SMedialDSs/ SAudioRelations with
 	 * only one span and a concatenated STextualDS for each primary text (only
 	 * one span for all annotations).
 	 * 
@@ -687,11 +672,11 @@ public class Toolbox2SaltMapperTest implements ToolboxXmlDictionary {
 		((PepperModuleProperty<Boolean>) getFixture().getProperties().getProperty(ToolboxImporterProperties.PROP_NEW_SPAN)).setValue(false);
 		start(getFixture(), outStream.toString());
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations());
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().get(0));
-		assertEquals(5, getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().size());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSAudioDataSources().size());
-		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.mp3", getFixture().getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).getSAudioDS().getSAudioReference().toFileString());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getMedialDSs());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getMedialRelations());
+		assertNotNull(getFixture().getDocument().getDocumentGraph().getMedialDSs().get(0));
+		assertEquals(5, getFixture().getDocument().getDocumentGraph().getMedialRelations().size());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getMedialDSs().size());
+		assertEquals(PepperTestUtil.getTestResources() + "exampleSound.mp3", getFixture().getDocument().getDocumentGraph().getMedialRelations().get(0).getTarget().getMediaReference().toFileString());
 	}
 }

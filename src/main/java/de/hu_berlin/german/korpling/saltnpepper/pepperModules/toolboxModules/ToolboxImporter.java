@@ -17,6 +17,8 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules;
 
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
@@ -28,9 +30,7 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleNotReadyException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperImporterImpl;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
+
 
 /**
  * This is a dummy implementation of a {@link PepperImporter}, which can be used
@@ -100,7 +100,7 @@ public class ToolboxImporter extends PepperImporterImpl implements PepperImporte
 		this.setSupplierContact(URI.createURI("saltnpepper@lists.hu-berlin.de"));
 		this.setSupplierHomepage(URI.createURI("saltnpepper@lists.hu-berlin.de"));
 		this.addSupportedFormat("toolbox-xml", "1.0", null);
-		this.getSDocumentEndings().add("xml");
+		this.getDocumentEndings().add("xml");
 		this.setProperties(new ToolboxImporterProperties());
 	}
 
@@ -108,7 +108,7 @@ public class ToolboxImporter extends PepperImporterImpl implements PepperImporte
 	 * <strong>OVERRIDE THIS METHOD FOR CUSTOMIZATION</strong> <br/>
 	 * This method creates a customized {@link PepperMapper} object and returns
 	 * it. You can here do some additional initialisations. Thinks like setting
-	 * the {@link SElementId} of the {@link SDocument} or {@link SCorpus} object
+	 * the {@link Identifier} of the {@link SDocument} or {@link SCorpus} object
 	 * and the {@link URI} resource is done by the framework (or more in detail
 	 * in method {@link #start()}).<br/>
 	 * The parameter <code>sElementId</code>, if a {@link PepperMapper} object
@@ -123,16 +123,16 @@ public class ToolboxImporter extends PepperImporterImpl implements PepperImporte
 	 * If your mapper needs to have set variables, this is the place to do it.
 	 * 
 	 * @param sElementId
-	 *            {@link SElementId} of the {@link SCorpus} or {@link SDocument}
+	 *            {@link Identifier} of the {@link SCorpus} or {@link SDocument}
 	 *            to be processed.
 	 * @return {@link PepperMapper} object to do the mapping task for object
-	 *         connected to given {@link SElementId}
+	 *         connected to given {@link Identifier}
 	 */
 	@Override
-	public PepperMapper createPepperMapper(SElementId sElementId) {
+	public PepperMapper createPepperMapper(Identifier sElementId) {
 		PepperMapper mapper = new Toolbox2SaltMapper();
 		if (sElementId.getIdentifiableElement() != null && sElementId.getIdentifiableElement() instanceof SDocument) {
-			URI resource = getSElementId2ResourceTable().get(sElementId);
+			URI resource = getIdentifier2ResourceTable().get(sElementId);
 			mapper.setResourceURI(resource);
 		}
 		return mapper;
