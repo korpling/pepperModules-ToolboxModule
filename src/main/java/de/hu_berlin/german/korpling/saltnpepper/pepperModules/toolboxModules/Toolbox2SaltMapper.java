@@ -33,6 +33,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.corpus_tools.pepper.common.DOCUMENT_STATUS;
+import org.corpus_tools.pepper.impl.PepperMapperImpl;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SMedialDS;
 import org.corpus_tools.salt.common.SMedialRelation;
@@ -50,9 +52,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
 
 import com.google.common.io.Files;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
 
 
 public class Toolbox2SaltMapper extends PepperMapperImpl {

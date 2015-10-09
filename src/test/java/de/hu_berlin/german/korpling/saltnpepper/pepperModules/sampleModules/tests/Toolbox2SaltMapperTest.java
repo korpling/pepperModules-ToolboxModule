@@ -30,6 +30,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.corpus_tools.pepper.modules.PepperModuleProperty;
+import org.corpus_tools.pepper.testFramework.PepperTestUtil;
 import org.corpus_tools.salt.SaltFactory;
 import org.eclipse.emf.common.util.URI;
 import org.junit.After;
@@ -37,8 +39,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperTestUtil;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.Toolbox2SaltMapper;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.ToolboxImporterProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.ToolboxXmlDictionary;
