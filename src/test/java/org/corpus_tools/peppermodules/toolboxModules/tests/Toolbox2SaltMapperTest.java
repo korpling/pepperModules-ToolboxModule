@@ -15,7 +15,7 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.sampleModules.tests;
+package org.corpus_tools.peppermodules.toolboxModules.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -32,16 +32,15 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.corpus_tools.pepper.modules.PepperModuleProperty;
 import org.corpus_tools.pepper.testFramework.PepperTestUtil;
+import org.corpus_tools.peppermodules.toolboxModules.Toolbox2SaltMapper;
+import org.corpus_tools.peppermodules.toolboxModules.ToolboxImporterProperties;
+import org.corpus_tools.peppermodules.toolboxModules.ToolboxXmlDictionary;
 import org.corpus_tools.salt.SaltFactory;
 import org.eclipse.emf.common.util.URI;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.Toolbox2SaltMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.ToolboxImporterProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.ToolboxXmlDictionary;
 
 /**
  * Maps a Toolbox structure to a Salt {@link SDocumentGraph}.
