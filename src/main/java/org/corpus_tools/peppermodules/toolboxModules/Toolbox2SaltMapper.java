@@ -359,9 +359,9 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 	private void createAudioRelForEachTok(List<SToken> tokList, SMedialDS audio) {
 		if (!tokList.isEmpty() && audio != null) {
 			// create an audio relation for each token
-			SAudioDSRelation audioRel = null;
+			SMedialRelation audioRel = null;
 			for (SToken tok : tokList) {
-				SMedialRelation audioRel = SaltFactory.createSMedialRelation();
+				audioRel = SaltFactory.createSMedialRelation();
 				File file = new File(audio.getMediaReference().toFileString());
 				double duration = computeDuration(file);
 				audioRel.setSource(tok);
@@ -370,10 +370,10 @@ public class Toolbox2SaltMapper extends PepperMapperImpl {
 				audioRel.setEnd(duration);
 				getDocument().getDocumentGraph().addRelation(audioRel);
 			}
-			File file = new File(audio.getSAudioReference().toFileString());
+			File file = new File(audio.getMediaReference().toFileString());
 			double duration = computeDuration(file);
-			getSDocument().getSDocumentGraph().getSAudioDSRelations().get(0).setSStart(0.0);
-			getSDocument().getSDocumentGraph().getSAudioDSRelations().get(tokList.size() - 1).setSEnd(duration);
+			getDocument().getDocumentGraph().getMedialRelations().get(0).setStart(0.0);
+			getDocument().getDocumentGraph().getMedialRelations().get(tokList.size() - 1).setEnd(duration);
 		}
 	}
 
