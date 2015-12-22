@@ -15,13 +15,12 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.sampleModules.tests;
+package org.corpus_tools.peppermodules.toolboxModules.tests;
 
+import org.corpus_tools.pepper.common.FormatDesc;
+import org.corpus_tools.pepper.testFramework.PepperImporterTest;
+import org.corpus_tools.peppermodules.toolboxModules.ToolboxImporter;
 import org.junit.Before;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperImporterTest;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.ToolboxImporter;
 
 /**
  * This is a dummy implementation of a JUnit test for testing the
@@ -31,7 +30,7 @@ import de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules.Too
  * href="http://www.vogella.com/tutorials/JUnit/article.html">
  * http://www.vogella.com/tutorials/JUnit/article.html</a>. <br/>
  * Please note, that the test class is derived from {@link PepperImporterTest}.
- * The usage of this class should simplfy your work and allows you to test only
+ * The usage of this class should simplify your work and allows you to test only
  * your single importer in the Pepper environment.
  * 
  * @author Florian Zipser

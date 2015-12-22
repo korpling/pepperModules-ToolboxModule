@@ -15,7 +15,7 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.toolboxModules;
+package org.corpus_tools.peppermodules.toolboxModules;
 
 public interface ToolboxXmlDictionary {
 
