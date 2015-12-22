@@ -6,7 +6,7 @@
 		<version>3.0.0</version>
 	</parent>
 	<artifactId>pepperModules-ToolboxModules</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<name>${project.groupId}.${project.artifactId}</name>
 	<packaging>bundle</packaging>
 	<description>This project provides three sample modules for Pepper. It provides an importer, an exporter and a manipulator. The project can be used as a container for creating new PepperModules. One just have to override the areas marked with TODO.</description>
@@ -27,7 +27,7 @@
 		<connection>scm:git:git://github.com/korpling/pepperModules-ToolboxModules.git</connection>
 		<developerConnection>scm:git:git@github.com:korpling/pepperModules-ToolboxModules.git</developerConnection>
 		<url>https://github.com/korpling/pepperModules-ToolboxModules.git</url>
-	  <tag>pepperModules-ToolboxModules-1.0.2</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<dependencies>
